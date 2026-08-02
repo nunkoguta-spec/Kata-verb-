@@ -1,674 +1,1446 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deutscher Konjugator (5000 Verben)</title>
-    <style>
-        :root {
-            --primary-blue: #2563eb;
-            --primary-blue-hover: #1d4ed8;
-            --bg-light: #f8fafc;
-            --card-bg: #ffffff;
-            --border-color: #e2e8f0;
-            --text-dark: #1e293b;
-            --text-muted: #64748b;
-            --highlight-red: #ef4444;
-            --badge-bg: #e0e7ff;
-            --badge-text: #4338ca;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Konjugator 800 Kata Kerja Bahasa Jerman</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --primary: #2563eb;
+      --primary-hover: #1d4ed8;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --accent-sep: #ef4444;
+      --tag-bg: #f1f5f9;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            background-color: var(--bg-light);
-            color: var(--text-dark);
-            display: flex;
-            justify-content: center;
-            padding: 20px;
-            min-height: 100vh;
-        }
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 24px 12px;
+      display: flex;
+      justify-content: center;
+    }
 
-        .container {
-            width: 100%;
-            max-width: 850px;
-            background: var(--card-bg);
-            border-radius: 12px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
-            padding: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
+    .app-container {
+      background: var(--card-bg);
+      padding: 28px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+      width: 100%;
+      max-width: 720px;
+    }
 
-        header {
-            text-align: center;
-            margin-bottom: 10px;
-        }
+    header { text-align: center; margin-bottom: 20px; }
+    h1 { font-size: 1.5rem; color: var(--text); margin-bottom: 6px; }
+    p.subtitle { font-size: 0.9rem; color: var(--muted); }
 
-        header h1 {
-            font-size: 26px;
-            font-weight: 800;
-            color: #0f172a;
-        }
+    .search-box {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
 
-        header p {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-top: 4px;
-        }
+    input[type="text"] {
+      flex: 1;
+      padding: 12px 16px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 1rem;
+      outline: none;
+    }
 
-        /* Search Section */
-        .search-box {
-            display: flex;
-            gap: 12px;
-        }
+    input[type="text"]:focus { border-color: var(--primary); }
 
-        .search-box input {
-            flex: 1;
-            padding: 12px 18px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.2s;
-        }
+    button.btn-search {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+    }
 
-        .search-box input:focus {
-            border-color: var(--primary-blue);
-        }
+    button.btn-search:hover { background-color: var(--primary-hover); }
 
-        .search-box button {
-            background-color: var(--primary-blue);
-            color: white;
-            border: none;
-            padding: 0 28px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 15px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+    .filter-section { margin-bottom: 20px; }
+    
+    .category-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
 
-        .search-box button:hover {
-            background-color: var(--primary-blue-hover);
-        }
+    .btn-filter {
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      background: var(--tag-bg);
+      color: var(--text);
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
 
-        /* Category Filter Buttons */
-        .filter-tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
+    .btn-filter.active {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
 
-        .filter-btn {
-            background: #f1f5f9;
-            border: 1px solid transparent;
-            padding: 8px 16px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
+    .filter-title {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
 
-        .filter-btn.active {
-            background: var(--primary-blue);
-            color: white;
-        }
+    .tags-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      max-height: 220px;
+      overflow-y: auto;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: #fafafa;
+    }
 
-        /* Verbs Cloud Box */
-        .verb-cloud-container {
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            padding: 15px;
-            background: #fafafa;
-        }
+    .tag {
+      background: #ffffff;
+      border: 1px solid var(--border);
+      padding: 4px 10px;
+      border-radius: 16px;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
 
-        .verb-cloud-header {
-            font-size: 12px;
-            font-weight: 700;
-            color: var(--text-muted);
-            letter-spacing: 0.5px;
-            margin-bottom: 12px;
-            text-transform: uppercase;
-        }
+    .tag:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
 
-        .verb-cloud {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            max-height: 200px;
-            overflow-y: auto;
-            padding-right: 5px;
-        }
+    .result-card {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      margin-top: 10px;
+    }
 
-        .verb-cloud::-webkit-scrollbar {
-            width: 6px;
-        }
+    .verb-header {
+      background: #f8fafc;
+      padding: 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
 
-        .verb-cloud::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
+    .verb-title { font-size: 1.3rem; font-weight: 700; }
+    .verb-meaning { font-size: 0.95rem; color: var(--muted); margin-top: 2px; }
+    .verb-article { font-size: 0.85rem; color: var(--primary); font-weight: 600; margin-left: 8px; }
+    .verb-translation { font-size: 0.9rem; color: var(--text); margin-top: 2px; }
 
-        .verb-tag {
-            background: white;
-            border: 1px solid var(--border-color);
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-size: 13px;
-            color: var(--text-dark);
-            cursor: pointer;
-            transition: all 0.15s ease;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-        }
+    .badge {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+    }
 
-        .verb-tag:hover, .verb-tag.selected {
-            border-color: var(--primary-blue);
-            color: var(--primary-blue);
-            background: #eff6ff;
-        }
+    .badge-regular { background: #dcfce7; color: #166534; }
+    .badge-irregular { background: #fee2e2; color: #991b1b; }
+    .badge-modal { background: #fef3c7; color: #92400e; }
+    .badge-separable { background: #e0e7ff; color: #3730a3; }
 
-        /* Conjugation Card Section */
-        .detail-card {
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            overflow: hidden;
-            background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.02);
-        }
+    table { width: 100%; border-collapse: collapse; }
+    td {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.95rem;
+    }
 
-        .detail-header {
-            padding: 20px 24px;
-            border-bottom: 1px solid var(--border-color);
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
+    tr:last-child td { border-bottom: none; }
+    .pronoun { color: var(--muted); width: 35%; }
+    .conjugation { font-weight: 600; }
+    .highlight-ending { color: var(--primary); }
+    .highlight-sep { color: var(--accent-sep); font-weight: bold; }
 
-        .verb-title-area {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
+    .audio-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      margin-left: 8px;
+    }
 
-        .verb-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 24px;
-            font-weight: 800;
-        }
+    .translation-toggle {
+      background: none;
+      border: 1px solid var(--border);
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.2s;
+    }
 
-        .audio-icon {
-            cursor: pointer;
-            width: 20px;
-            height: 20px;
-            fill: #94a3b8;
-            transition: fill 0.2s;
-            vertical-align: middle;
-        }
+    .translation-toggle:hover {
+      background: var(--primary);
+      color: white;
+      border-color: var(--primary);
+    }
 
-        .audio-icon:hover {
-            fill: var(--primary-blue);
-        }
+    .translation-row td {
+      background: #f8fafc;
+      color: var(--muted);
+      font-size: 0.85rem;
+      padding: 6px 16px;
+      border-bottom: 1px solid var(--border);
+    }
 
-        .verb-meaning {
-            font-size: 14px;
-            color: var(--text-muted);
-        }
+    .translation-row td:last-child {
+      font-weight: 500;
+      color: var(--text);
+    }
 
-        .verb-type-badge {
-            background: var(--badge-bg);
-            color: var(--badge-text);
-            font-size: 12px;
-            font-weight: 600;
-            padding: 6px 12px;
-            border-radius: 6px;
-        }
-
-        /* Tense Selector Bar */
-        .tense-tabs {
-            display: flex;
-            border-bottom: 1px solid var(--border-color);
-            background: #f8fafc;
-            overflow-x: auto;
-        }
-
-        .tense-tab {
-            padding: 10px 16px;
-            font-size: 13px;
-            font-weight: 600;
-            color: var(--text-muted);
-            cursor: pointer;
-            border-bottom: 2px solid transparent;
-            white-space: nowrap;
-        }
-
-        .tense-tab.active {
-            color: var(--primary-blue);
-            border-bottom-color: var(--primary-blue);
-            background: white;
-        }
-
-        /* Conjugation Table */
-        .conjugation-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .conjugation-table tr {
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        .conjugation-table tr:last-child {
-            border-bottom: none;
-        }
-
-        .conjugation-table td {
-            padding: 14px 24px;
-            font-size: 15px;
-        }
-
-        .pronoun-col {
-            width: 35%;
-            color: #64748b;
-            font-weight: 500;
-        }
-
-        .form-col {
-            width: 65%;
-            font-weight: 700;
-            color: #0f172a;
-        }
-
-        .prefix-highlight {
-            color: var(--highlight-red);
-            font-weight: 700;
-        }
-
-        .aux-highlight {
-            color: #0284c7;
-            font-weight: 600;
-        }
-
-        .search-stats {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin-top: 4px;
-        }
-    </style>
+    .tag-article {
+      font-size: 0.7rem;
+      color: var(--muted);
+      margin-left: 2px;
+    }
+  </style>
 </head>
 <body>
 
-<div class="container">
-    <header>
-        <h1>Deutscher Konjugator (5000 Verben)</h1>
-        <p>Database Kata Kerja Bahasa Jerman Terlengkap A1 - C1</p>
-    </header>
+<div class="app-container">
+  <header>
+    <h1>Deutscher Konjugator (800 Verben)</h1>
+    <p class="subtitle">Database Kata Kerja Bahasa Jerman Terlengkap A1 - C1</p>
+  </header>
 
-    <div class="search-box">
-        <input type="text" id="searchInput" placeholder="Cari kata kerja... (misal: sehen, einkaufen, machen)" onkeyup="handleSearch()">
-        <button onclick="executeSearch()">Cari</button>
+  <div class="search-box">
+    <input type="text" id="verbInput" placeholder="Ketik kata kerja (misal: einkaufen, sprechen, sein)..." value="einkaufen">
+    <button class="btn-search" onclick="conjugate()">Cari</button>
+  </div>
+
+  <div class="filter-section">
+    <div class="category-buttons">
+      <button class="btn-filter active" onclick="filterVerbs('all', this)">Semua (800)</button>
+      <button class="btn-filter" onclick="filterVerbs('regular', this)">Reguler</button>
+      <button class="btn-filter" onclick="filterVerbs('irregular', this)">Irreguler</button>
+      <button class="btn-filter" onclick="filterVerbs('modal', this)">Modal</button>
+      <button class="btn-filter" onclick="filterVerbs('separable', this)">Trennbare (Terpisah)</button>
     </div>
 
-    <div class="filter-tags">
-        <button class="filter-btn active" onclick="setFilter('all', this)">Semua (5000+)</button>
-        <button class="filter-btn" onclick="setFilter('regular', this)">Reguler</button>
-        <button class="filter-btn" onclick="setFilter('irregular', this)">Irreguler</button>
-        <button class="filter-btn" onclick="setFilter('modal', this)">Modal</button>
-        <button class="filter-btn" onclick="setFilter('separable', this)">Trennbare (Terpisah)</button>
-    </div>
+    <div class="filter-title" id="tagCount">Daftar Kata Kerja:</div>
+    <div class="tags-grid" id="tagsGrid"></div>
+  </div>
 
-    <div class="verb-cloud-container">
-        <div class="verb-cloud-header" id="cloudHeader">DAFTAR KATA KERJA (5000 KATA):</div>
-        <div class="verb-cloud" id="verbCloud"></div>
-    </div>
-
-    <!-- Verb Conjugation Result Card -->
-    <div class="detail-card" id="detailCard">
-        <div class="detail-header">
-            <div class="verb-title-area">
-                <div class="verb-title">
-                    <span id="currentVerbTitle">einkaufen</span>
-                    <svg class="audio-icon" onclick="speakText(currentVerb.infinitive)" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-                </div>
-                <div class="verb-meaning">Artinya: <span id="currentVerbMeaning">berbelanja</span></div>
-            </div>
-            <div class="verb-type-badge" id="currentVerbBadge">Trennbares Verb</div>
-        </div>
-
-        <div class="tense-tabs">
-            <div class="tense-tab active" onclick="setTense('praesens', this)">Präsens</div>
-            <div class="tense-tab" onclick="setTense('praeteritum', this)">Präteritum</div>
-            <div class="tense-tab" onclick="setTense('perfekt', this)">Perfekt</div>
-            <div class="tense-tab" onclick="setTense('plusquamperfekt', this)">Plusquamperfekt</div>
-            <div class="tense-tab" onclick="setTense('futur1', this)">Futur I</div>
-        </div>
-
-        <table class="conjugation-table">
-            <tbody id="conjugationRows">
-                <!-- Conjugation rows injected via JS -->
-            </tbody>
-        </table>
-    </div>
+  <div id="result"></div>
 </div>
 
 <script>
-// Comprehensive database of 5000+ German verbs generated algorithmically + curated database
-const separablePrefixes = ["ab", "an", "auf", "aus", "bei", "ein", "mit", "nach", "vor", "zu", "durch", "hinter", "über", "unter", "um", "voll", "wider", "wieder", "her", "hin", "los", "weg", "zurück", "zusammen", "weiter", "empor", "entgegen", "gegenüber"];
+  // ================= TERJEMAHAN UNTUK SEMUA KATA KERJA =================
+  const verbTranslations = {
+    // Modal Verbs
+    "können": { article: "", translation: "bisa / mampu" },
+    "müssen": { article: "", translation: "harus" },
+    "wollen": { article: "", translation: "ingin / mau" },
+    "möchten": { article: "", translation: "ingin (sopan)" },
+    "dürfen": { article: "", translation: "boleh" },
+    "sollen": { article: "", translation: "seharusnya" },
+    "mögen": { article: "", translation: "menyukai" },
 
-const coreDatabase = {
-    "sein": { type: "irregular", meaning: "ada / adalah / menjadi", aux: "sein", stem: "sei", praesens: ["bin", "bist", "ist", "sind", "seid", "sind"], praeteritum: ["war", "warst", "war", "waren", "wart", "waren"], partizip2: "gewesen" },
-    "haben": { type: "irregular", meaning: "mempunyai", aux: "haben", stem: "hab", praesens: ["habe", "hast", "hat", "haben", "habt", "haben"], praeteritum: ["hatte", "hattest", "hatte", "hatten", "hattet", "hatten"], partizip2: "gehabt" },
-    "werden": { type: "irregular", meaning: "menjadi", aux: "sein", stem: "werd", praesens: ["werde", "wirst", "wird", "werden", "werdet", "werden"], praeteritum: ["wurde", "wurdest", "wurde", "wurden", "wurdet", "wurden"], partizip2: "geworden" },
-    "können": { type: "modal", meaning: "dapat / bisa", aux: "haben", stem: "könn", praesens: ["kann", "kannst", "kann", "können", "könnt", "können"], praeteritum: ["konnte", "konntest", "konnte", "konnten", "konntet", "konnten"], partizip2: "gekonnt" },
-    "müssen": { type: "modal", meaning: "harus", aux: "haben", stem: "müss", praesens: ["muss", "musst", "muss", "müssen", "müsst", "müssen"], praeteritum: ["musste", "musstest", "musste", "mussten", "musstet", "mussten"], partizip2: "gemusst" },
-    "wollen": { type: "modal", meaning: "ingin / mau", aux: "haben", stem: "woll", praesens: ["will", "willst", "will", "wollen", "wollt", "wollen"], praeteritum: ["wollte", "wolltest", "wollte", "wollten", "wolltet", "wollten"], partizip2: "gewollt" },
-    "sollen": { type: "modal", meaning: "seharusnya", aux: "haben", stem: "soll", praesens: ["soll", "sollst", "soll", "sollen", "sollt", "sollen"], praeteritum: ["sollte", "solltest", "sollte", "sollten", "solltet", "sollten"], partizip2: "gesollt" },
-    "dürfen": { type: "modal", meaning: "boleh", aux: "haben", stem: "dürf", praesens: ["darf", "darfst", "darf", "dürfen", "dürft", "dürfen"], praeteritum: ["durfte", "durftest", "durfte", "durften", "durftet", "durften"], partizip2: "gedurft" },
-    "mögen": { type: "modal", meaning: "suka", aux: "haben", stem: "mög", praesens: ["mag", "magst", "mag", "mögen", "mögt", "mögen"], praeteritum: ["mochte", "mochtest", "mochte", "mochten", "mochtet", "mochten"], partizip2: "gemocht" },
-    "wissen": { type: "irregular", meaning: "tahu / mengetahui", aux: "haben", stem: "wiss", praesens: ["weiß", "weißt", "weiß", "wissen", "wisst", "wissen"], praeteritum: ["wusste", "wusstest", "wusste", "wussten", "wusstet", "wussten"], partizip2: "gewusst" },
-    "sehen": { type: "irregular", meaning: "melihat", aux: "haben", stem: "seh", praesens: ["sehe", "siehst", "sieht", "sehen", "seht", "sehen"], praeteritum: ["sah", "sahst", "sah", "sahen", "saht", "sahen"], partizip2: "gesehen" },
-    "gehen": { type: "irregular", meaning: "pergi / berjalan", aux: "sein", stem: "geh", praesens: ["gehe", "gehst", "geht", "gehen", "geht", "gehen"], praeteritum: ["ging", "gingst", "ging", "gingen", "gingt", "gingen"], partizip2: "gegangen" },
-    "kommen": { type: "irregular", meaning: "datang", aux: "sein", stem: "komm", praesens: ["komme", "kommst", "kommt", "kommen", "kommt", "kommen"], praeteritum: ["kam", "kamst", "kam", "kamen", "kamt", "kamen"], partizip2: "gekommen" },
-    "sprechen": { type: "irregular", meaning: "berbicara", aux: "haben", stem: "sprech", praesens: ["spreche", "sprichst", "spricht", "sprechen", "sprecht", "sprechen"], praeteritum: ["sprach", "sprachst", "sprach", "sprachen", "spracht", "sprachen"], partizip2: "gesprochen" },
-    "einkaufen": { type: "separable", meaning: "berbelanja", aux: "haben", prefix: "ein", base: "kaufen" },
-    "anfangen": { type: "separable", meaning: "memulai", aux: "haben", prefix: "an", base: "fangen" },
-    "aufstehen": { type: "separable", meaning: "bangun tidur", aux: "sein", prefix: "auf", base: "stehen" },
-    "mitkommen": { type: "separable", meaning: "ikut pergi", aux: "sein", prefix: "mit", base: "kommen" },
-    "anrufen": { type: "separable", meaning: "menelepon", aux: "haben", prefix: "an", base: "rufen" },
-    "aussehen": { type: "separable", meaning: "kelihatan / tampak", aux: "haben", prefix: "aus", base: "sehen" },
-    "denken": { type: "irregular", meaning: "berpikir", aux: "haben", stem: "denk", praesens: ["denke", "denkst", "denkt", "denken", "denkt", "denken"], praeteritum: ["dachte", "dachtest", "dachte", "dachten", "dachtet", "dachten"], partizip2: "gedacht" },
-    "bringen": { type: "irregular", meaning: "membawa", aux: "haben", stem: "bring", praesens: ["bringe", "bringst", "bringt", "bringen", "bringt", "bringen"], praeteritum: ["brachte", "brachtest", "brachte", "brachten", "brachtet", "brachten"], partizip2: "gebracht" },
-    "finden": { type: "irregular", meaning: "menemukan / menganggap", aux: "haben", stem: "find", praesens: ["finde", "findest", "findet", "finden", "findet", "finden"], praeteritum: ["fand", "fandest", "fand", "fanden", "fandet", "fanden"], partizip2: "gefunden" },
-    "geben": { type: "irregular", meaning: "memberi", aux: "haben", stem: "geb", praesens: ["gebe", "gibst", "gibt", "geben", "gebt", "geben"], praeteritum: ["gab", "gabst", "gab", "gaben", "gabt", "gaben"], partizip2: "gegeben" },
-    "nehmen": { type: "irregular", meaning: "mengambil", aux: "haben", stem: "nehm", praesens: ["nehme", "nimmst", "nimmt", "nehmen", "nehmt", "nehmen"], praeteritum: ["nahm", "nahmst", "nahm", "nahmen", "nahmt", "nahmen"], partizip2: "genommen" },
-    "stehen": { type: "irregular", meaning: "berdiri", aux: "haben", stem: "steh", praesens: ["stehe", "stehst", "steht", "stehen", "steht", "stehen"], praeteritum: ["stand", "standest", "stand", "standen", "standet", "standen"], partizip2: "gestanden" },
-    "bleiben": { type: "irregular", meaning: "tinggal / tetap", aux: "sein", stem: "bleib", praesens: ["bleibe", "bleibst", "bleibt", "bleiben", "bleibt", "bleiben"], praeteritum: ["blieb", "bliebst", "blieb", "blieben", "bliebt", "blieben"], partizip2: "geblieben" }
-};
+    // Irregular Verbs - Lengkap
+    "sein": { article: "das", translation: "menjadi / be" },
+    "haben": { article: "das", translation: "mempunyai" },
+    "werden": { article: "das", translation: "menjadi" },
+    "fahren": { article: "das", translation: "berkendara" },
+    "lesen": { article: "das", translation: "membaca" },
+    "sehen": { article: "das", translation: "melihat" },
+    "sprechen": { article: "das", translation: "berbicara" },
+    "essen": { article: "das", translation: "makan" },
+    "schlafen": { article: "das", translation: "tidur" },
+    "nehmen": { article: "das", translation: "mengambil" },
+    "geben": { article: "das", translation: "memberi" },
+    "helfen": { article: "das", translation: "membantu" },
+    "treffen": { article: "das", translation: "bertemu" },
+    "laufen": { article: "das", translation: "berlari / berjalan" },
+    "tragen": { article: "das", translation: "memakai / membawa" },
+    "wissen": { article: "das", translation: "mengetahui" },
+    "waschen": { article: "das", translation: "mencuci" },
+    "gefallen": { article: "das", translation: "disukai" },
+    "vergessen": { article: "das", translation: "lupa" },
+    "halten": { article: "das", translation: "memegang / berhenti" },
+    "lassen": { article: "das", translation: "membiarkan" },
+    "empfehlen": { article: "das", translation: "merekomendasikan" },
+    "bitten": { article: "das", translation: "meminta" },
+    "bleiben": { article: "das", translation: "tinggal / menetap" },
+    "brechen": { article: "das", translation: "mematahkan" },
+    "brennen": { article: "das", translation: "bakar / menyala" },
+    "bringen": { article: "das", translation: "membawa" },
+    "denken": { article: "das", translation: "berpikir" },
+    "empfangen": { article: "das", translation: "menerima" },
+    "fangen": { article: "das", translation: "menangkap" },
+    "fliegen": { article: "das", translation: "terbang" },
+    "fliehen": { article: "das", translation: "melarikan diri" },
+    "gewinnen": { article: "das", translation: "menang" },
+    "gießen": { article: "das", translation: "menyiram" },
+    "gleichen": { article: "das", translation: "mirip / menyerupai" },
+    "greifen": { article: "das", translation: "memegang / meraih" },
+    "hängen": { article: "das", translation: "menggantung" },
+    "heben": { article: "das", translation: "mengangkat" },
+    "kennen": { article: "das", translation: "mengenal" },
+    "klingen": { article: "das", translation: "terdengar" },
+    "laden": { article: "das", translation: "memuat / mengundang" },
+    "leiden": { article: "das", translation: "menderita" },
+    "leihen": { article: "das", translation: "meminjamkan" },
+    "lügen": { article: "das", translation: "berbohong" },
+    "messen": { article: "das", translation: "mengukur" },
+    "pfeifen": { article: "das", translation: "bersiul" },
+    "raten": { article: "das", translation: "menebak / menasihati" },
+    "riechen": { article: "das", translation: "mencium bau" },
+    "rufen": { article: "das", translation: "memanggil" },
+    "scheinen": { article: "das", translation: "bersinar / nampak" },
+    "schieben": { article: "das", translation: "mendorong" },
+    "schießen": { article: "das", translation: "menembak" },
+    "schlagen": { article: "das", translation: "memukul" },
+    "schließen": { article: "das", translation: "menutup" },
+    "schneiden": { article: "das", translation: "memotong" },
+    "schreiben": { article: "das", translation: "menulis" },
+    "schreien": { article: "das", translation: "berteriak" },
+    "schwimmen": { article: "das", translation: "berenang" },
+    "singen": { article: "das", translation: "bernyanyi" },
+    "sinken": { article: "das", translation: "tenggelam" },
+    "sitzen": { article: "das", translation: "duduk" },
+    "stehen": { article: "das", translation: "berdiri" },
+    "stehlen": { article: "das", translation: "mencuri" },
+    "steigen": { article: "das", translation: "naik / mendaki" },
+    "sterben": { article: "das", translation: "meninggal" },
+    "stoßen": { article: "das", translation: "mendorong / menyenggol" },
+    "streiten": { article: "das", translation: "bertengkar" },
+    "tun": { article: "das", translation: "melakukan" },
+    "verbieten": { article: "das", translation: "melarang" },
 
-// Word generation roots for expanded 5000+ verb database
-const baseRoots = [
-    "mach", "kauf", "spiel", "wohn", "arbeits", "lern", "frag", "sag", "hör", "such", "brauch", "glaub", "hoff", "leb", "lieb", "reis", "tanzt", "studiert", "besuch", "bezahl", "erklär", "versteh", "schreib", "les", "trink", "ess", "fahr", "flieg", "lauf", "schwimm", "sing", "spring", "sitz", "leg", "stell", "häng", "öffn", "schließ", "antwort", "dank", "folg", "gehör", "helfs", "passier", "renn", "schlaf", "trag", "wasch", "ziel", "zeig", "zahl", "zähl", "bau", "back", "bind", "bitt", "blas", "brat", "brech", "brenn", "empfang", "empfehl", "entscheid", "erschreck", "fall", "fang", "flieh", "fließ", "frier", "gewinn", "gieß", "gleich", "greif", "heb", "kenn", "kling", "lad", "leid", "leih", "lüg", "mess", "pfeif", "rat", "riech", "ruf", "schein", "schieb", "schieß", "schlag", "schneid", "schrei", "sank", "sterb", "stoß", "streit", "tun", "verbiet", "verlier", "verzeih", "wachs", "wieg", "zwing"
-];
+    // Separable Verbs - Lengkap
+    "einkaufen": { article: "", translation: "berbelanja" },
+    "anfangen": { article: "", translation: "memulai" },
+    "aufstehen": { article: "", translation: "bangun tidur" },
+    "mitkommen": { article: "", translation: "ikut datang" },
+    "anrufen": { article: "", translation: "menelepon" },
+    "aussehen": { article: "", translation: "nampak / kelihatan" },
+    "fernsehen": { article: "", translation: "menonton TV" },
+    "mitbringen": { article: "", translation: "membawa serta" },
+    "abholen": { article: "", translation: "menjemput" },
+    "ausfüllen": { article: "", translation: "mengisi formulir" },
+    "anmachen": { article: "", translation: "menyalakan" },
+    "ausmachen": { article: "", translation: "mematikan" },
+    "aufmachen": { article: "", translation: "membuka" },
+    "zumachen": { article: "", translation: "menutup" },
+    "abfahren": { article: "", translation: "berangkat" },
+    "ankommen": { article: "", translation: "tiba" },
+    "aussteigen": { article: "", translation: "turun kendaraan" },
+    "einsteigen": { article: "", translation: "naik kendaraan" },
+    "umsteigen": { article: "", translation: "transit" },
+    "vorstellen": { article: "", translation: "memperkenalkan" },
+    "aufhören": { article: "", translation: "berhenti" },
+    "aufräumen": { article: "", translation: "merapikan" },
+    "ausgeben": { article: "", translation: "mengeluarkan/membelanjakan" },
+    "einladen": { article: "", translation: "mengundang" },
+    "einschlafen": { article: "", translation: "tertidur" },
+    "stattfinden": { article: "", translation: "berlangsung" },
+    "vorbereiten": { article: "", translation: "mempersiapkan" },
+    "vorschlagen": { article: "", translation: "menyarankan" },
+    "zuhören": { article: "", translation: "mendengarkan secara saksama" },
+    "zurückkommen": { article: "", translation: "kembali" },
+    "mitnehmen": { article: "", translation: "membawa serta" },
+    "abgeben": { article: "", translation: "mengumpulkan/menyerahkan" },
+    "anpassen": { article: "", translation: "menyesuaikan" },
+    "aufpassen": { article: "", translation: "berhati-hati / mengawasi" },
+    "ausziehen": { article: "", translation: "pindah rumah / melepas pakaian" },
+    "anziehen": { article: "", translation: "memakai pakaian" },
+    "umziehen": { article: "", translation: "pindah tempat / berganti baju" },
+    "weggehen": { article: "", translation: "pergi meninggalkan tempat" },
+    "weiterkommen": { article: "", translation: "maju / berkembang" },
 
-// Indonesian vocabulary dictionary map generator
-const idMeanings = {
-    "mach": "membuat / melakukan", "kauf": "membeli", "spiel": "bermain", "wohn": "tinggal", "arbeit": "bekerja", "lern": "belajar", "frag": "bertanya", "sag": "mengatakan", "hör": "mendengar", "such": "mencari", "brauch": "membutuhkan", "glaub": "percaya", "hoff": "berharap", "leb": "hidup", "lieb": "mencintai", "reis": "bepergian", "tanz": "menari", "studier": "kuliah", "besuch": "mengunjungi", "bezahl": "membayar", "erklär": "menjelaskan", "versteh": "memahami", "schreib": "menulis", "les": "membaca", "trink": "minum", "ess": "makan", "fahr": "mengarungi / bepergian", "flieg": "terbang", "lauf": "berlari", "schwimm": "berenang", "sing": "bernanyi", "spring": "melompat", "sitz": "duduk", "leg": "meletakkan", "stell": "menempatkan", "häng": "menggantung", "öffn": "membuka", "schließ": "menutup", "antwort": "menjawab", "dank": "berterima kasih", "folg": "mengikuti", "gehör": "termasuk", "helf": "membantu", "passier": "terjadi", "renn": "berlari cepat", "schlaf": "tidur", "trag": "membawa / memakai", "wasch": "mencuci", "zeig": "menunjukkan", "zahl": "membayar", "zähl": "menghitung", "bau": "membangun"
-};
+    // ================= REGULAR VERBS - LENGKAP =================
+    "lernen": { article: "das", translation: "belajar" },
+    "machen": { article: "das", translation: "membuat" },
+    "kaufen": { article: "der", translation: "membeli" },
+    "wohnen": { article: "das", translation: "tinggal" },
+    "kommen": { article: "das", translation: "datang" },
+    "trinken": { article: "das", translation: "minum" },
+    "arbeiten": { article: "das", translation: "bekerja" },
+    "finden": { article: "das", translation: "menemukan" },
+    "spielen": { article: "das", translation: "bermain" },
+    "reisen": { article: "die", translation: "bepergian" },
+    "heißen": { article: "das", translation: "dipanggil / bernama" },
+    "antworten": { article: "die", translation: "menjawab" },
+    "bauen": { article: "das", translation: "membangun" },
+    "bedeuten": { article: "das", translation: "berarti" },
+    "begrüßen": { article: "die", translation: "menyapa" },
+    "bezahlen": { article: "die", translation: "membayar" },
+    "brauchen": { article: "das", translation: "memerlukan" },
+    "danken": { article: "der", translation: "berterima kasih" },
+    "drucken": { article: "das", translation: "mencetak" },
+    "duschen": { article: "die", translation: "mandi" },
+    "erklären": { article: "die", translation: "menjelaskan" },
+    "erzählen": { article: "das", translation: "menceritakan" },
+    "fragen": { article: "die", translation: "bertanya" },
+    "glauben": { article: "der", translation: "percaya" },
+    "hoffen": { article: "die", translation: "berharap" },
+    "hören": { article: "das", translation: "mendengar" },
+    "kochen": { article: "das", translation: "memasak" },
+    "kosten": { article: "die", translation: "berharga / mencoba" },
+    "lachen": { article: "das", translation: "tertawa" },
+    "leben": { article: "das", translation: "hidup" },
+    "lieben": { article: "die", translation: "mencintai" },
+    "meinen": { article: "die", translation: "berpendapat" },
+    "öffnen": { article: "das", translation: "membuka" },
+    "sagen": { article: "das", translation: "mengatakan" },
+    "suchen": { article: "die", translation: "mencari" },
+    "tanzen": { article: "der", translation: "menari" },
+    "verkaufen": { article: "der", translation: "menjual" },
+    "verstehen": { article: "das", translation: "memahami" },
+    "warten": { article: "die", translation: "menunggu" },
+    "zeigen": { article: "das", translation: "menunjukkan" },
+    "baden": { article: "das", translation: "berenang / mandi" },
+    "bestellen": { article: "die", translation: "memesan" },
+    "besuchen": { article: "der", translation: "mengunjungi" },
+    "dauern": { article: "die", translation: "berlangsung" },
+    "feiern": { article: "die", translation: "merayakan" },
+    "fotografieren": { article: "das", translation: "memotret" },
+    "frühstücken": { article: "das", translation: "sarapan" },
+    "grüßen": { article: "der", translation: "menyapa" },
+    "heiraten": { article: "die", translation: "menikah" },
+    "holen": { article: "das", translation: "mengambil" },
+    "korrigieren": { article: "die", translation: "mengoreksi" },
+    "lächeln": { article: "das", translation: "tersenyum" },
+    "legen": { article: "das", translation: "meletakkan" },
+    "stellen": { article: "das", translation: "menempatkan" },
+    "mieten": { article: "die", translation: "menyewa" },
+    "vermieten": { article: "die", translation: "menyewakan" },
+    "parken": { article: "das", translation: "memarkir" },
+    "planen": { article: "der", translation: "merencanakan" },
+    "probieren": { article: "das", translation: "mencoba" },
+    "putzen": { article: "die", translation: "membersihkan" },
+    "rechnen": { article: "das", translation: "menghitung" },
+    "regnen": { article: "der", translation: "hujan" },
+    "reservieren": { article: "die", translation: "memesan" },
+    "schneien": { article: "der", translation: "bersalju" },
+    "spazieren": { article: "der", translation: "berjalan-jalan" },
+    "sparen": { article: "das", translation: "menabung" },
+    "stimmen": { article: "die", translation: "setuju" },
+    "studieren": { article: "das", translation: "belajar (universitas)" },
+    "tanken": { article: "die", translation: "mengisi bensin" },
+    "telefonieren": { article: "das", translation: "menelepon" },
+    "üben": { article: "das", translation: "berlatih" },
+    "übersetzen": { article: "die", translation: "menerjemahkan" },
+    "unterschreiben": { article: "die", translation: "menandatangani" },
+    "vergleichen": { article: "der", translation: "membandingkan" },
+    "wandern": { article: "die", translation: "mendaki" },
+    "wünschen": { article: "der", translation: "menginginkan" },
+    "zeichnen": { article: "das", translation: "menggambar" },
+    "buchen": { article: "die", translation: "memesan" },
+    "landen": { article: "die", translation: "mendarat" },
+    "packen": { article: "das", translation: "mengemas" },
+    "schicken": { article: "das", translation: "mengirim" },
+    "sortieren": { article: "die", translation: "menyortir" },
+    "spülen": { article: "das", translation: "mencuci piring" },
+    "sammeln": { article: "das", translation: "mengumpulkan" },
+    "starten": { article: "der", translation: "memulai" },
+    "stören": { article: "die", translation: "mengganggu" },
+    "tauschen": { article: "der", translation: "menukar" },
+    "träumen": { article: "der", translation: "bermimpi" },
+    "verdienen": { article: "der", translation: "menghasilkan (uang)" },
+    "verpassen": { article: "die", translation: "melewatkan" },
+    "weinen": { article: "das", translation: "menangis" },
+    "wiederholen": { article: "die", translation: "mengulangi" },
+    "zählen": { article: "das", translation: "menghitung" },
+    "übernachten": { article: "die", translation: "menginap" },
+    "passen": { article: "die", translation: "cocok" },
+    "rauchen": { article: "das", translation: "merokok" },
+    "atmen": { article: "der", translation: "bernapas" },
+    "bemerken": { article: "die", translation: "memperhatikan" },
+    "berichtigen": { article: "die", translation: "mengoreksi" },
+    "beschreiben": { article: "die", translation: "menggambarkan" },
+    "bestrafen": { article: "die", translation: "menghukum" },
+    "bewegen": { article: "die", translation: "bergerak" },
+    "bewachen": { article: "die", translation: "menjaga" },
+    "beweisen": { article: "der", translation: "membuktikan" },
+    "bewohnen": { article: "die", translation: "mendiami" },
+    "blicken": { article: "der", translation: "memandang" },
+    "blühen": { article: "die", translation: "mekar" },
+    "bohren": { article: "das", translation: "mengebor" },
+    "bürgen": { article: "der", translation: "menjamin" },
+    "dienen": { article: "der", translation: "melayani" },
+    "drehen": { article: "das", translation: "memutar" },
+    "drücken": { article: "der", translation: "menekan" },
+    "dürsten": { article: "der", translation: "haus" },
+    "ehren": { article: "die", translation: "menghormati" },
+    "eilen": { article: "die", translation: "bergegas" },
+    "einigen": { article: "die", translation: "menyatukan" },
+    "erblicken": { article: "der", translation: "melihat" },
+    "ergänzen": { article: "die", translation: "melengkapi" },
+    "erinnern": { article: "die", translation: "mengingat" },
+    "erkennen": { article: "die", translation: "mengenali" },
+    "erleben": { article: "das", translation: "mengalami" },
+    "erlauben": { article: "die", translation: "mengizinkan" },
+    "erreichen": { article: "das", translation: "mencapai" },
+    "erscheinen": { article: "die", translation: "muncul" },
+    "esperieren": { article: "die", translation: "berharap" },
+    "fehlen": { article: "der", translation: "kurang" },
+    "filmen": { article: "der", translation: "memfilmkan" },
+    "folgen": { article: "die", translation: "mengikuti" },
+    "fordern": { article: "die", translation: "menuntut" },
+    "fördern": { article: "die", translation: "mendorong" },
+    "füttern": { article: "die", translation: "memberi makan" },
+    "gärtnern": { article: "der", translation: "berkebun" },
+    "gehorchen": { article: "der", translation: "mematuhi" },
+    "gehören": { article: "die", translation: "milik" },
+    "genügen": { article: "die", translation: "cukup" },
+    "gestalten": { article: "die", translation: "membentuk" },
+    "gewöhnen": { article: "die", translation: "membiasakan" },
+    "glänzen": { article: "der", translation: "berkilau" },
+    "glühen": { article: "die", translation: "bersinar" },
+    "gründen": { article: "die", translation: "mendirikan" },
+    "gucken": { article: "das", translation: "melihat" },
+    "handeln": { article: "das", translation: "bertindak" },
+    "hassen": { article: "der", translation: "membenci" },
+    "heilen": { article: "die", translation: "menyembuhkan" },
+    "heizen": { article: "die", translation: "memanaskan" },
+    "hindern": { article: "die", translation: "menghalangi" },
+    "husten": { article: "der", translation: "batuk" },
+    "impfen": { article: "die", translation: "memvaksin" },
+    "informieren": { article: "die", translation: "menginformasikan" },
+    "jagen": { article: "die", translation: "berburu" },
+    "jammern": { article: "der", translation: "meratap" },
+    "jubeln": { article: "der", translation: "bersorak" },
+    "kämmen": { article: "das", translation: "menyisir" },
+    "kämpfen": { article: "der", translation: "berjuang" },
+    "klagen": { article: "die", translation: "mengeluh" },
+    "klatschen": { article: "das", translation: "bertepuk tangan" },
+    "kleben": { article: "das", translation: "menempel" },
+    "klettern": { article: "die", translation: "memanjat" },
+    "klingeln": { article: "das", translation: "berdering" },
+    "klopfen": { article: "das", translation: "mengetuk" },
+    "knüpfen": { article: "die", translation: "mengikat" },
+    "koppeln": { article: "die", translation: "menghubungkan" },
+    "kränken": { article: "die", translation: "menyakiti" },
+    "kratzen": { article: "das", translation: "menggaruk" },
+    "kriegen": { article: "der", translation: "mendapat" },
+    "kühlen": { article: "die", translation: "mendinginkan" },
+    "kürzen": { article: "die", translation: "memendekkan" },
+    "lärmen": { article: "der", translation: "berisik" },
+    "lasten": { article: "die", translation: "membebani" },
+    "leiten": { article: "die", translation: "memimpin" },
+    "lenken": { article: "die", translation: "mengarahkan" },
+    "liefern": { article: "die", translation: "menyediakan" },
+    "loben": { article: "das", translation: "memuji" },
+    "löschen": { article: "das", translation: "memadamkan" },
+    "lösen": { article: "die", translation: "memecahkan" },
+    "lüften": { article: "die", translation: "mengudara" },
+    "magen": { article: "der", translation: "suka" },
+    "malen": { article: "das", translation: "melukis" },
+    "mischen": { article: "das", translation: "mencampur" },
+    "nähen": { article: "das", translation: "menjahit" },
+    "nähern": { article: "die", translation: "mendekati" },
+    "nennen": { article: "das", translation: "menamai" },
+    "nützen": { article: "die", translation: "berguna" },
+    "ordnen": { article: "die", translation: "mengatur" },
+    "pflanzen": { article: "die", translation: "menanam" },
+    "pflegen": { article: "die", translation: "merawat" },
+    "prüfen": { article: "die", translation: "memeriksa" },
+    "quälen": { article: "die", translation: "menyiksa" },
+    "räumen": { article: "das", translation: "membereskan" },
+    "reden": { article: "das", translation: "berbicara" },
+    "reinigen": { article: "die", translation: "membersihkan" },
+    "retten": { article: "die", translation: "menyelamatkan" },
+    "richten": { article: "die", translation: "mengarahkan" },
+    "rollen": { article: "das", translation: "menggulung" },
+    "rühren": { article: "die", translation: "mengaduk" },
+    "schalten": { article: "die", translation: "mengoperasikan" },
+    "schätzen": { article: "die", translation: "menghargai" },
+    "schauen": { article: "das", translation: "melihat" },
+    "scheitern": { article: "das", translation: "gagal" },
+    "schenken": { article: "das", translation: "memberi hadiah" },
+    "schildern": { article: "die", translation: "menggambarkan" },
+    "schlichten": { article: "die", translation: "mendamaikan" },
+    "schmecken": { article: "der", translation: "terasa" },
+    "schmücken": { article: "die", translation: "menghias" },
+    "schönen": { article: "die", translation: "mempercantik" },
+    "schützen": { article: "der", translation: "melindungi" },
+    "segnen": { article: "der", translation: "memberkati" },
+    "sehnen": { article: "die", translation: "merindukan" },
+    "siegen": { article: "der", translation: "menang" },
+    "spenden": { article: "die", translation: "menyumbang" },
+    "sperren": { article: "die", translation: "memblokir" },
+    "spionieren": { article: "die", translation: "mata-mata" },
+    "spüren": { article: "die", translation: "merasakan" },
+    "staunen": { article: "das", translation: "terkejut" },
+    "steuern": { article: "die", translation: "mengemudikan" },
+    "stoppen": { article: "der", translation: "berhenti" },
+    "strafen": { article: "die", translation: "menghukum" },
+    "strecken": { article: "die", translation: "meregangkan" },
+    "stürzen": { article: "der", translation: "jatuh" },
+    "täuschen": { article: "die", translation: "menipu" },
+    "teilen": { article: "die", translation: "membagi" },
+    "töten": { article: "der", translation: "membunuh" },
+    "trösten": { article: "der", translation: "menghibur" },
+    "turnen": { article: "das", translation: "senam" },
+    "überraschen": { article: "die", translation: "mengejutkan" },
+    "urteilen": { article: "das", translation: "menilai" },
+    "verbessern": { article: "die", translation: "memperbaiki" },
+    "verlangen": { article: "die", translation: "meminta" },
+    "verletzen": { article: "die", translation: "melukai" },
+    "verfehlen": { article: "die", translation: "melewatkan" },
+    "verhaften": { article: "die", translation: "menangkap" },
+    "verhindern": { article: "die", translation: "mencegah" },
+    "verkleinern": { article: "die", translation: "memperkecil" },
+    "verlängern": { article: "die", translation: "memperpanjang" },
+    "vermeiden": { article: "die", translation: "menghindari" },
+    "vermuten": { article: "die", translation: "menduga" },
+    "vernichten": { article: "die", translation: "menghancurkan" },
+    "verpacken": { article: "die", translation: "mengemas" },
+    "verreisen": { article: "die", translation: "bepergian" },
+    "versäumen": { article: "die", translation: "melewatkan" },
+    "verschaffen": { article: "die", translation: "menyediakan" },
+    "versichern": { article: "die", translation: "menjamin" },
+    "versöhnen": { article: "die", translation: "mendamaikan" },
+    "verstecken": { article: "das", translation: "menyembunyikan" },
+    "verteidigen": { article: "die", translation: "membela" },
+    "vertrauen": { article: "das", translation: "mempercayai" },
+    "verursachen": { article: "die", translation: "menyebabkan" },
+    "verwenden": { article: "die", translation: "menggunakan" },
+    "verzichten": { article: "der", translation: "melepaskan" },
+    "vollenden": { article: "die", translation: "menyelesaikan" },
+    "wählen": { article: "die", translation: "memilih" },
+    "warnen": { article: "die", translation: "memperingatkan" },
+    "wechseln": { article: "der", translation: "berganti" },
+    "wehren": { article: "die", translation: "melawan" },
+    "weisen": { article: "die", translation: "menunjukkan" },
+    "wenden": { article: "die", translation: "membalik" },
+    "werben": { article: "die", translation: "beriklan" },
+    "wirken": { article: "die", translation: "bekerja" },
+    "wundern": { article: "die", translation: "heran" },
+    "zahlen": { article: "die", translation: "membayar" },
+    "zerstören": { article: "die", translation: "menghancurkan" },
+    "zögern": { article: "der", translation: "ragu" },
+    "zwingen": { article: "die", translation: "memaksa" },
+    "abdecken": { article: "die", translation: "menutupi" },
+    "abmachen": { article: "die", translation: "menentukan" },
+    "abrechnen": { article: "die", translation: "memperhitungkan" },
+    "absagen": { article: "die", translation: "membatalkan" },
+    "abschaffen": { article: "die", translation: "menghapuskan" },
+    "achten": { article: "die", translation: "memperhatikan" },
+    "aktivieren": { article: "die", translation: "mengaktifkan" },
+    "akzeptieren": { article: "die", translation: "menerima" },
+    "analysieren": { article: "die", translation: "menganalisis" },
+    "anbieten": { article: "das", translation: "menawarkan" },
+    "ändern": { article: "die", translation: "mengubah" },
+    "anerkennen": { article: "die", translation: "mengakui" },
+    "angreifen": { article: "der", translation: "menyerang" },
+    "anstellen": { article: "die", translation: "mempekerjakan" },
+    "anzeigen": { article: "die", translation: "menunjukkan" },
+    "arrangieren": { article: "das", translation: "mengatur" },
+    "aufbauen": { article: "die", translation: "membangun" },
+    "aufklären": { article: "die", translation: "menjelaskan" },
+    "ausbilden": { article: "die", translation: "melatih" },
+    "ausbreiten": { article: "die", translation: "menyebarkan" },
+    "ausführen": { article: "die", translation: "melaksanakan" },
+    "ausnutzen": { article: "die", translation: "memanfaatkan" },
+    "ausreichen": { article: "die", translation: "cukup" },
+    "austauschen": { article: "der", translation: "menukar" },
+    "auswirken": { article: "die", translation: "berpengaruh" },
+    "beachten": { article: "die", translation: "memperhatikan" },
+    "beanspruchen": { article: "der", translation: "menuntut" },
+    "beantworten": { article: "die", translation: "menjawab" },
+    "bearbeiten": { article: "die", translation: "memproses" },
+    "bedauern": { article: "der", translation: "menyesali" },
+    "bedienen": { article: "die", translation: "melayani" },
+    "bedrohen": { article: "die", translation: "mengancam" },
+    "beeinflussen": { article: "die", translation: "mempengaruhi" },
+    "beeinträchtigen": { article: "die", translation: "mengganggu" },
+    "beenden": { article: "die", translation: "mengakhiri" },
+    "befassen": { article: "die", translation: "menangani" },
+    "befördern": { article: "die", translation: "mempromosikan" },
+    "befreien": { article: "die", translation: "membebaskan" },
+    "begegnen": { article: "die", translation: "bertemu" },
+    "begeistern": { article: "die", translation: "menggembirakan" },
+    "beginnen": { article: "der", translation: "memulai" },
+    "begleiten": { article: "die", translation: "menemani" },
+    "begrenzen": { article: "die", translation: "membatasi" },
+    "begründen": { article: "die", translation: "membenarkan" },
+    "behalten": { article: "das", translation: "menyimpan" },
+    "behaupten": { article: "die", translation: "mengklaim" },
+    "behandeln": { article: "die", translation: "merawat" },
+    "beherrschen": { article: "die", translation: "menguasai" },
+    "behindern": { article: "die", translation: "menghalangi" },
+    "belasten": { article: "die", translation: "membebani" },
+    "beleidigen": { article: "die", translation: "menghina" },
+    "benachrichtigen": { article: "die", translation: "memberi tahu" },
+    "benötigen": { article: "die", translation: "membutuhkan" },
+    "benutzen": { article: "die", translation: "menggunakan" },
+    "beobachten": { article: "die", translation: "mengamati" },
+    "beraten": { article: "die", translation: "menasihati" },
+    "berechnen": { article: "die", translation: "menghitung" },
+    "berechtigen": { article: "die", translation: "mengizinkan" },
+    "bereiten": { article: "die", translation: "menyiapkan" },
+    "berichten": { article: "die", translation: "melaporkan" },
+    "berücksichtigen": { article: "die", translation: "mempertimbangkan" },
+    "beruhigen": { article: "die", translation: "menenangkan" },
+    "beschädigen": { article: "die", translation: "merusak" },
+    "beschäftigen": { article: "die", translation: "mempekerjakan" },
+    "beschließen": { article: "die", translation: "memutuskan" },
+    "beschränken": { article: "die", translation: "membatasi" },
+    "beschützen": { article: "die", translation: "melindungi" },
+    "beschweren": { article: "die", translation: "mengeluh" },
+    "beseitigen": { article: "die", translation: "menghilangkan" },
+    "besetzen": { article: "die", translation: "menduduki" },
+    "besichtigen": { article: "die", translation: "mengunjungi" },
+    "besitzen": { article: "das", translation: "memiliki" },
+    "sorgen": { article: "die", translation: "khawatir" },
+    "bestätigen": { article: "die", translation: "mengkonfirmasi" },
+    "bestimmen": { article: "die", translation: "menentukan" },
+    "beteiligen": { article: "die", translation: "berpartisipasi" },
+    "betonen": { article: "die", translation: "menekankan" },
+    "betrachten": { article: "die", translation: "mempertimbangkan" },
+    "betreuen": { article: "die", translation: "merawat" },
+    "betreiben": { article: "die", translation: "mengoperasikan" },
+    "beurteilen": { article: "die", translation: "menilai" },
+    "bevorzugen": { article: "die", translation: "lebih menyukai" },
+    "bewältigen": { article: "die", translation: "mengatasi" },
+    "bewahren": { article: "die", translation: "menjaga" },
+    "bewundern": { article: "die", translation: "mengagumi" },
+    "bezeichnen": { article: "die", translation: "menunjuk" },
+    "beziehen": { article: "die", translation: "menarik" },
+    "bilanzieren": { article: "die", translation: "menyeimbangkan" },
+    "bilden": { article: "die", translation: "membentuk" },
+    "billigen": { article: "die", translation: "menyetujui" },
+    "binden": { article: "das", translation: "mengikat" },
+    "blasen": { article: "der", translation: "meniup" },
+    "buchstabieren": { article: "die", translation: "mengeja" },
+    "dämpfen": { article: "die", translation: "mengukus" },
+    "darstellen": { article: "die", translation: "menampilkan" },
+    "decken": { article: "die", translation: "menutupi" },
+    "definieren": { article: "die", translation: "mendefinisikan" },
+    "demonstrieren": { article: "die", translation: "berdemo" },
+    "differenzieren": { article: "die", translation: "membedakan" },
+    "diskutieren": { article: "die", translation: "berdiskusi" },
+    "dokumentieren": { article: "die", translation: "mendokumentasikan" },
+    "dolmetschen": { article: "das", translation: "menerjemahkan" },
+    "donnern": { article: "der", translation: "bergemuruh" },
+    "dringen": { article: "der", translation: "mendesak" },
+    "duften": { article: "der", translation: "harum" },
+    "dulden": { article: "die", translation: "menoleransi" },
+    "durchführen": { article: "die", translation: "melaksanakan" },
+    "ebnen": { article: "die", translation: "meratakan" },
+    "eignen": { article: "die", translation: "cocok" },
+    "einführen": { article: "die", translation: "memperkenalkan" },
+    "einpacken": { article: "das", translation: "membungkus" },
+    "einrichten": { article: "die", translation: "mengatur" },
+    "einsammeln": { article: "das", translation: "mengumpulkan" },
+    "einschalten": { article: "die", translation: "menyalakan" },
+    "einsetzen": { article: "die", translation: "memasang" },
+    "einsparen": { article: "die", translation: "menghemat" },
+    "eintragen": { article: "die", translation: "mendaftarkan" },
+    "einwandern": { article: "die", translation: "berimigrasi" },
+    "einwilligen": { article: "die", translation: "menyetujui" },
+    "einwirken": { article: "die", translation: "mempengaruhi" },
+    "ekeln": { article: "der", translation: "jijik" },
+    "empfinden": { article: "das", translation: "merasakan" },
+    "enden": { article: "das", translation: "berakhir" },
+    "entdecken": { article: "die", translation: "menemukan" },
+    "entfernen": { article: "die", translation: "menghapus" },
+    "entfalten": { article: "die", translation: "mengembangkan" },
+    "enthalten": { article: "das", translation: "berisi" },
+    "entkommen": { article: "der", translation: "melarikan diri" },
+    "entlassen": { article: "die", translation: "memecat" },
+    "entnehmen": { article: "die", translation: "mengambil" },
+    "entscheiden": { article: "die", translation: "memutuskan" },
+    "entschuldigen": { article: "die", translation: "meminta maaf" },
+    "entsorgen": { article: "die", translation: "membuang" },
+    "entstehen": { article: "das", translation: "terjadi" },
+    "entäuschen": { article: "die", translation: "mengecewakan" },
+    "entwickeln": { article: "die", translation: "mengembangkan" },
+    "entwerfen": { article: "der", translation: "merancang" },
+    "entziehen": { article: "die", translation: "menarik" },
+    "erarbeiten": { article: "die", translation: "membuat" },
+    "erbauen": { article: "die", translation: "membangun" },
+    "erweitern": { article: "die", translation: "memperluas" },
+    "erfinden": { article: "die", translation: "menemukan" },
+    "erfordern": { article: "die", translation: "memerlukan" },
+    "erfreuen": { article: "die", translation: "menyenangkan" },
+    "ergreifen": { article: "die", translation: "mengambil" },
+    "erhalten": { article: "das", translation: "menerima" },
+    "erhöhen": { article: "die", translation: "meningkatkan" },
+    "erholen": { article: "die", translation: "beristirahat" },
+    "erkundigen": { article: "die", translation: "bertanya" },
+    "erleichtern": { article: "die", translation: "memudahkan" },
+    "erläutern": { article: "die", translation: "menjelaskan" },
+    "erledigen": { article: "die", translation: "menyelesaikan" },
+    "ermöglichen": { article: "die", translation: "memungkinkan" },
+    "ermorden": { article: "der", translation: "membunuh" },
+    "erneuern": { article: "die", translation: "memperbarui" },
+    "erschöpfen": { article: "die", translation: "melelahkan" },
+    "ersetzen": { article: "der", translation: "mengganti" },
+    "erstellen": { article: "die", translation: "membuat" },
+    "ersuchen": { article: "die", translation: "meminta" },
+    "erteilen": { article: "die", translation: "memberikan" },
+    "ertragen": { article: "die", translation: "menahan" },
+    "erwägen": { article: "die", translation: "mempertimbangkan" },
+    "erwähnen": { article: "die", translation: "menyebut" },
+    "erwarten": { article: "die", translation: "mengharapkan" },
+    "erwerben": { article: "der", translation: "memperoleh" },
+    "erzeugen": { article: "die", translation: "menghasilkan" },
+    "erziehen": { article: "die", translation: "mendidik" },
+    "experimentieren": { article: "das", translation: "bereksperimen" },
+    "exportieren": { article: "die", translation: "mengekspor" },
+    "falten": { article: "die", translation: "melipat" },
+    "fassen": { article: "der", translation: "memegang" },
+    "faulenzen": { article: "das", translation: "bermalas-malasan" },
+    "feststellen": { article: "die", translation: "menetapkan" },
+    "finanzieren": { article: "die", translation: "membiayai" },
+    "fluchen": { article: "der", translation: "mengutuk" },
+    "fokussieren": { article: "die", translation: "memfokuskan" },
+    "formulieren": { article: "die", translation: "merumuskan" },
+    "forschen": { article: "die", translation: "meneliti" },
+    "frieren": { article: "der", translation: "kedinginan" },
+    "fühlen": { article: "das", translation: "merasa" },
+    "führen": { article: "die", translation: "memimpin" },
+    "füllen": { article: "die", translation: "mengisi" },
+    "funktionieren": { article: "die", translation: "berfungsi" },
+    "fürchten": { article: "die", translation: "takut" },
+    "garantieren": { article: "die", translation: "menjamin" },
+    "gebären": { article: "die", translation: "melahirkan" },
+    "gebrauchen": { article: "der", translation: "menggunakan" },
+    "gedeihen": { article: "der", translation: "berkembang" },
+    "gefährden": { article: "die", translation: "membahayakan" },
+    "genehmigen": { article: "die", translation: "menyetujui" },
+    "generieren": { article: "die", translation: "menghasilkan" },
+    "genießen": { article: "das", translation: "menikmati" },
+    "geraten": { article: "der", translation: "terjadi" },
+    "gestehen": { article: "das", translation: "mengakui" },
+    "gestatten": { article: "die", translation: "mengizinkan" },
+    "gliedern": { article: "die", translation: "menyusun" },
+    "gratulieren": { article: "die", translation: "memberi selamat" },
+    "grenzen": { article: "die", translation: "berbatasan" },
+    "grillen": { article: "das", translation: "memanggang" },
+    "halbieren": { article: "die", translation: "membelah dua" },
+    "hämmern": { article: "das", translation: "memukul" },
+    "häufen": { article: "die", translation: "menumpuk" },
+    "hemmen": { article: "die", translation: "menghambat" },
+    "herstellen": { article: "die", translation: "memproduksi" },
+    "horchen": { article: "das", translation: "mendengarkan" },
+    "identifizieren": { article: "die", translation: "mengidentifikasi" },
+    "ignorieren": { article: "die", translation: "mengabaikan" },
+    "importieren": { article: "die", translation: "mengimpor" },
+    "initiieren": { article: "die", translation: "memulai" },
+    "involvieren": { article: "die", translation: "melibatkan" },
+    "isolieren": { article: "die", translation: "mengisolasi" },
+    "justieren": { article: "die", translation: "menyesuaikan" },
+    "kehren": { article: "die", translation: "menyapu" },
+    "kennzeichnen": { article: "die", translation: "menandai" },
+    "klären": { article: "die", translation: "menjelaskan" },
+    "kreisen": { article: "die", translation: "melingkar" },
+    "kritisieren": { article: "die", translation: "mengkritik" },
+    "lehren": { article: "die", translation: "mengajar" },
+    "leisten": { article: "die", translation: "melakukan" },
+    "leuchten": { article: "das", translation: "bersinar" },
+    "locken": { article: "die", translation: "memancing" },
+    "lohnen": { article: "die", translation: "layak" },
+    "mitteilen": { article: "die", translation: "memberi tahu" },
+    "modellieren": { article: "die", translation: "memodelkan" },
+    "moderieren": { article: "die", translation: "memoderasi" },
+    "modernisieren": { article: "die", translation: "memodernisasi" },
+    "montieren": { article: "die", translation: "merakit" },
+    "motivieren": { article: "die", translation: "memotivasi" },
+    "mühen": { article: "die", translation: "berusaha" },
+    "multiplizieren": { article: "die", translation: "mengalikan" },
+    "murmeln": { article: "das", translation: "bergumam" },
+    "nachdenken": { article: "die", translation: "berpikir" },
+    "nachweisen": { article: "die", translation: "membuktikan" },
+    "nutzen": { article: "die", translation: "menggunakan" },
+    "opfern": { article: "die", translation: "mengorbankan" },
+    "organisieren": { article: "die", translation: "mengorganisir" },
+    "orientieren": { article: "die", translation: "mengorientasikan" },
+    "pachten": { article: "die", translation: "menyewa" },
+    "platzen": { article: "der", translation: "meledak" },
+    "produzieren": { article: "die", translation: "memproduksi" },
+    "programmieren": { article: "das", translation: "memprogram" },
+    "qualifizieren": { article: "die", translation: "memenuhi syarat" },
+    "quellen": { article: "die", translation: "membengkak" },
+    "rasieren": { article: "das", translation: "mencukur" },
+    "reagieren": { article: "die", translation: "bereaksi" },
+    "risikieren": { article: "das", translation: "merisikokan" },
+    "rügen": { article: "die", translation: "menegur" },
+    "sägen": { article: "die", translation: "menggergaji" },
+    "salzen": { article: "das", translation: "memberi garam" },
+    "sättigen": { article: "die", translation: "memuaskan" },
+    "schädigen": { article: "die", translation: "merusak" },
+    "schärfen": { article: "die", translation: "menajamkan" },
+    "schaudern": { article: "der", translation: "menggigil" },
+    "schelten": { article: "der", translation: "memarahi" },
+    "scheren": { article: "die", translation: "mencukur" },
+    "scherzen": { article: "das", translation: "bercanda" },
+    "scheuen": { article: "die", translation: "takut" },
+    "schichten": { article: "die", translation: "berlapis" },
+    "schimmern": { article: "der", translation: "bersinar" },
+    "schimpfen": { article: "der", translation: "memarahi" },
+    "schlachten": { article: "die", translation: "menyembelih" },
+    "schläfern": { article: "die", translation: "mengantuk" },
+    "schlendern": { article: "der", translation: "bersantai" },
+    "schleudern": { article: "die", translation: "melempar" },
+    "schlucken": { article: "das", translation: "menelan" },
+    "schlummern": { article: "der", translation: "tertidur" },
+    "schlüpfen": { article: "die", translation: "menyelinap" },
+    "schmälern": { article: "die", translation: "mengurangi" },
+    "schmeicheln": { article: "die", translation: "menyanjung" },
+    "schmelzen": { article: "der", translation: "meleleh" },
+    "schmirgeln": { article: "das", translation: "mengampelas" },
+    "schmieren": { article: "die", translation: "mengoles" },
+    "schmuggeln": { article: "die", translation: "menyelundupkan" },
+    "schnappen": { article: "das", translation: "menangkap" },
+    "schnaufen": { article: "der", translation: "terengah" },
+    "schnitzen": { article: "das", translation: "memahat" },
+    "schnüffeln": { article: "das", translation: "mengendus" },
+    "schnüren": { article: "die", translation: "mengikat" },
+    "schnurren": { article: "der", translation: "mendengung" },
+    "schockieren": { article: "die", translation: "mengejutkan" },
+    "schonen": { article: "die", translation: "menghemat" },
+    "schrecken": { article: "der", translation: "menakutkan" },
+    "schrubben": { article: "das", translation: "menggosok" },
+    "schütteln": { article: "das", translation: "mengguncang" },
+    "schwanken": { article: "die", translation: "bergoyang" },
+    "schwärmen": { article: "die", translation: "memuja" },
+    "schwärzen": { article: "die", translation: "menghitamkan" },
+    "schweben": { article: "die", translation: "melayang" },
+    "schwelgen": { article: "die", translation: "menikmati" },
+    "schwenken": { article: "die", translation: "mengayun" },
+    "schwitzen": { article: "das", translation: "berkeringat" },
+    "segeln": { article: "das", translation: "berlayar" },
+    "seufzen": { article: "der", translation: "menghela napas" },
+    "sichern": { article: "die", translation: "mengamankan" },
+    "sichten": { article: "die", translation: "melihat" },
+    "siegeln": { article: "das", translation: "menyegel" },
+    "simulieren": { article: "die", translation: "mensimulasikan" },
+    "skizzieren": { article: "die", translation: "mensketas" },
+    "speichern": { article: "die", translation: "menyimpan" },
+    "spekulieren": { article: "die", translation: "berspekulasi" },
+    "splittern": { article: "der", translation: "pecah" },
+    "sponsern": { article: "die", translation: "mensponsori" },
+    "sprühen": { article: "das", translation: "menyemprot" },
+    "stammen": { article: "die", translation: "berasal" },
+    "stampfen": { article: "das", translation: "menghentak" },
+    "stärken": { article: "die", translation: "memperkuat" },
+    "steigern": { article: "die", translation: "meningkatkan" },
+    "stempeln": { article: "das", translation: "mencap" },
+    "stiften": { article: "die", translation: "menyumbangkan" },
+    "stimulieren": { article: "die", translation: "merangsang" },
+    "stottern": { article: "das", translation: "gagap" },
+    "strahlen": { article: "die", translation: "bersinar" },
+    "strapazieren": { article: "die", translation: "memaksakan" },
+    "streuen": { article: "die", translation: "menabur" },
+    "stricken": { article: "das", translation: "merajut" },
+    "strukturieren": { article: "die", translation: "menstruktur" },
+    "stufen": { article: "die", translation: "menyusun" },
+    "stützen": { article: "die", translation: "menopang" },
+    "subventionieren": { article: "die", translation: "mensubsidi" },
+    "summen": { article: "das", translation: "bersenandung" },
+    "symbolisieren": { article: "die", translation: "melambangkan" },
+    "sympathisieren": { article: "die", translation: "bersimpati" },
+    "synchronisieren": { article: "die", translation: "menyinkronkan" },
+    "takten": { article: "die", translation: "memberi irama" },
+    "tarnen": { article: "die", translation: "menyamarkan" },
+    "tätowieren": { article: "die", translation: "tato" },
+    "tolerieren": { article: "die", translation: "mentolerir" },
+    "touren": { article: "die", translation: "berkeliling" },
+    "trauern": { article: "die", translation: "berduka" },
+    "tröpfeln": { article: "die", translation: "menetes" },
+    "tippen": { article: "das", translation: "mengetik" },
+    "überblicken": { article: "die", translation: "melihat sekilas" },
+    "überdenken": { article: "die", translation: "memikirkan kembali" },
+    "übereinstimmen": { article: "die", translation: "setuju" },
+    "überfordern": { article: "die", translation: "membebani" },
+    "überprüfen": { article: "die", translation: "memeriksa" },
+    "überwachen": { article: "die", translation: "mengawasi" },
+    "überwinden": { article: "die", translation: "mengatasi" },
+    "überzeugen": { article: "die", translation: "meyakinkan" },
+    "umfassen": { article: "die", translation: "mencakup" },
+    "umgehen": { article: "der", translation: "menghindari" },
+    "umwandeln": { article: "die", translation: "mengubah" },
+    "unterbrechen": { article: "die", translation: "menyela" },
+    "unterhalten": { article: "die", translation: "menghibur" },
+    "unterrichten": { article: "der", translation: "mengajar" },
+    "unterstützen": { article: "die", translation: "mendukung" },
+    "untersuchen": { article: "die", translation: "menyelidiki" },
+    "variieren": { article: "die", translation: "memvariasikan" },
+    "verändern": { article: "die", translation: "mengubah" },
+    "veranlassen": { article: "die", translation: "menyebabkan" },
+    "verankern": { article: "die", translation: "menjangkarkan" },
+    "verantworten": { article: "die", translation: "bertanggung jawab" },
+    "verarbeiten": { article: "die", translation: "memproses" },
+    "verbergen": { article: "das", translation: "menyembunyikan" },
+    "verbinden": { article: "die", translation: "menghubungkan" },
+    "verdoppeln": { article: "die", translation: "menggandakan" },
+    "vereinfachen": { article: "die", translation: "menyederhanakan" },
+    "vereinbaren": { article: "die", translation: "menyetujui" },
+    "vereinigen": { article: "die", translation: "menyatukan" },
+    "verfolgen": { article: "die", translation: "mengikuti" },
+    "verfügen": { article: "die", translation: "memiliki" },
+    "verhandeln": { article: "die", translation: "bernegosiasi" },
+    "verheimlichen": { article: "die", translation: "menyembunyikan" },
+    "verkünden": { article: "die", translation: "mengumumkan" },
+    "vermindern": { article: "die", translation: "mengurangi" },
+    "vermitteln": { article: "die", translation: "menyampaikan" },
+    "vernachlässigen": { article: "die", translation: "mengabaikan" },
+    "veröffentlichen": { article: "die", translation: "mempublikasikan" },
+    "verraten": { article: "der", translation: "mengkhianati" },
+    "versammeln": { article: "die", translation: "mengumpulkan" },
+    "verschieben": { article: "die", translation: "menunda" },
+    "verschlechtern": { article: "die", translation: "memperburuk" },
+    "verschwinden": { article: "der", translation: "menghilang" },
+    "versorgen": { article: "die", translation: "menyediakan" },
+    "versprechen": { article: "das", translation: "berjanji" },
+    "verstärken": { article: "die", translation: "memperkuat" },
+    "verteilen": { article: "die", translation: "mendistribusikan" },
+    "vertragen": { article: "die", translation: "mentoleransi" },
+    "vertreten": { article: "der", translation: "mewakili" },
+    "verwalten": { article: "die", translation: "mengelola" },
+    "verwandeln": { article: "die", translation: "mengubah" },
+    "verwirklichen": { article: "die", translation: "mewujudkan" },
+    "vorlegen": { article: "die", translation: "menyajikan" },
+    "wachsen": { article: "der", translation: "tumbuh" },
+    "widersprechen": { article: "der", translation: "menyangkal" },
+    "würdigen": { article: "die", translation: "menghargai" },
+    "zusammenfassen": { article: "die", translation: "meringkas" },
+    "zustimmen": { article: "die", translation: "setuju" },
+    "zweifeln": { article: "der", translation: "meragukan" },
+    "abschließen": { article: "der", translation: "menyelesaikan" },
+    "anerkennen": { article: "die", translation: "mengakui" },
+    "ansteigen": { article: "der", translation: "naik" },
+    "aufnehmen": { article: "die", translation: "merekam" },
+    "ausdrücken": { article: "die", translation: "mengekspresikan" },
+    "ausschließen": { article: "die", translation: "mengecualikan" },
+    "beeindrucken": { article: "die", translation: "mengesankan" },
+    "begreifen": { article: "der", translation: "memahami" },
+    "bestehen": { article: "die", translation: "lulus" },
+    "einfallen": { article: "die", translation: "terlintas" },
+    "enthalten": { article: "das", translation: "berisi" },
+    "entsprechen": { article: "die", translation: "sesuai" },
+    "erfahren": { article: "die", translation: "mengalami" },
+    "erlauben": { article: "die", translation: "mengizinkan" },
+    "ermutigen": { article: "die", translation: "menyemangati" },
+    "erschrecken": { article: "der", translation: "takut" },
+    "erwarten": { article: "die", translation: "mengharapkan" },
+    "erzwingen": { article: "die", translation: "memaksa" },
+    "festhalten": { article: "die", translation: "memegang" },
+    "hinweisen": { article: "die", translation: "menunjukkan" },
+    "nachgeben": { article: "die", translation: "mengalah" },
+    "stattfinden": { article: "die", translation: "berlangsung" },
+    "teilnehmen": { article: "die", translation: "berpartisipasi" },
+    "übernehmen": { article: "die", translation: "mengambil alih" },
+    "umgehen": { article: "der", translation: "menghindari" },
+    "unternehmen": { article: "die", translation: "melakukan" },
+    "vergleichen": { article: "der", translation: "membandingkan" },
+    "vorbereiten": { article: "die", translation: "mempersiapkan" },
+    "vorhaben": { article: "die", translation: "berencana" },
+    "weitergeben": { article: "die", translation: "meneruskan" },
+    "zusammenarbeiten": { article: "die", translation: "bekerja sama" },
+    "zuschauen": { article: "das", translation: "menonton" },
+    "zugehören": { article: "die", translation: "milik" }
+  };
 
-// Full dynamic verb generator to reach 5000 Verben database
-let verbDatabase = { ...coreDatabase };
+  const verbDatabase = {
+    // ================= MODAL VERBS =================
+    "können": { meaning: "bisa / mampu", type: "modal", forms: { "ich": "kann", "du": "kannst", "er/sie/es": "kann", "wir": "können", "ihr": "könnt", "sie/Sie": "können" } },
+    "müssen": { meaning: "harus", type: "modal", forms: { "ich": "muss", "du": "musst", "er/sie/es": "muss", "wir": "müssen", "ihr": "müsst", "sie/Sie": "müssen" } },
+    "wollen": { meaning: "ingin / mau", type: "modal", forms: { "ich": "will", "du": "willst", "er/sie/es": "will", "wir": "wollen", "ihr": "wollt", "sie/Sie": "wollen" } },
+    "möchten": { meaning: "ingin (sopan)", type: "modal", forms: { "ich": "möchte", "du": "möchtest", "er/sie/es": "möchte", "wir": "möchten", "ihr": "möchtet", "sie/Sie": "möchten" } },
+    "dürfen": { meaning: "boleh", type: "modal", forms: { "ich": "darf", "du": "darfst", "er/sie/es": "darf", "wir": "dürfen", "ihr": "dürft", "sie/Sie": "dürfen" } },
+    "sollen": { meaning: "seharusnya", type: "modal", forms: { "ich": "soll", "du": "sollst", "er/sie/es": "soll", "wir": "sollen", "ihr": "sollt", "sie/Sie": "sollen" } },
+    "mögen": { meaning: "menyukai", type: "modal", forms: { "ich": "mag", "du": "magst", "er/sie/es": "mag", "wir": "mögen", "ihr": "mögt", "sie/Sie": "mögen" } },
 
-function generate5000Verbs() {
-    let count = Object.keys(verbDatabase).length;
-    
-    // Generate regular & compound verbs algorithmically
-    for (let root of baseRoots) {
-        let cleanRoot = root.replace(/s$|t$/, '');
-        let inf = cleanRoot + (cleanRoot.endsWith('e') ? 'n' : 'en');
-        
-        if (!verbDatabase[inf]) {
-            let meaning = idMeanings[cleanRoot] || ("melakukan " + cleanRoot);
-            verbDatabase[inf] = {
-                type: "regular",
-                meaning: meaning,
-                aux: "haben",
-                stem: cleanRoot
-            };
-            count++;
-        }
+    // ================= IRREGULAR VERBS =================
+    "sein": { meaning: "menjadi / be", type: "irregular", forms: { "ich": "bin", "du": "bist", "er/sie/es": "ist", "wir": "sind", "ihr": "seid", "sie/Sie": "sind" } },
+    "haben": { meaning: "mempunyai", type: "irregular", forms: { "ich": "habe", "du": "hast", "er/sie/es": "hat", "wir": "haben", "ihr": "habt", "sie/Sie": "haben" } },
+    "werden": { meaning: "menjadi", type: "irregular", forms: { "ich": "werde", "du": "wirst", "er/sie/es": "wird", "wir": "werden", "ihr": "werdet", "sie/Sie": "werden" } },
+    "fahren": { meaning: "berkendara", type: "irregular", forms: { "ich": "fahre", "du": "fährst", "er/sie/es": "fährt", "wir": "fahren", "ihr": "fahrt", "sie/Sie": "fahren" } },
+    "lesen": { meaning: "membaca", type: "irregular", forms: { "ich": "lese", "du": "liest", "er/sie/es": "liest", "wir": "lesen", "ihr": "lest", "sie/Sie": "lesen" } },
+    "sehen": { meaning: "melihat", type: "irregular", forms: { "ich": "sehe", "du": "siehst", "er/sie/es": "sieht", "wir": "sehen", "ihr": "seht", "sie/Sie": "sehen" } },
+    "sprechen": { meaning: "berbicara", type: "irregular", forms: { "ich": "spreche", "du": "sprichst", "er/sie/es": "spricht", "wir": "sprechen", "ihr": "sprecht", "sie/Sie": "sprechen" } },
+    "essen": { meaning: "makan", type: "irregular", forms: { "ich": "esse", "du": "isst", "er/sie/es": "isst", "wir": "essen", "ihr": "esst", "sie/Sie": "essen" } },
+    "schlafen": { meaning: "tidur", type: "irregular", forms: { "ich": "schlafe", "du": "schläfst", "er/sie/es": "schläft", "wir": "schlafen", "ihr": "schlaft", "sie/Sie": "schlafen" } },
+    "nehmen": { meaning: "mengambil", type: "irregular", forms: { "ich": "nehme", "du": "nimmst", "er/sie/es": "nimmt", "wir": "nehmen", "ihr": "nehmt", "sie/Sie": "nehmen" } },
+    "geben": { meaning: "memberi", type: "irregular", forms: { "ich": "gebe", "du": "gibst", "er/sie/es": "gibt", "wir": "geben", "ihr": "gebt", "sie/Sie": "geben" } },
+    "helfen": { meaning: "membantu", type: "irregular", forms: { "ich": "helfe", "du": "hilfst", "er/sie/es": "hilft", "wir": "helfen", "ihr": "helft", "sie/Sie": "helfen" } },
+    "treffen": { meaning: "bertemu", type: "irregular", forms: { "ich": "treffe", "du": "triffst", "er/sie/es": "trifft", "wir": "treffen", "ihr": "trefft", "sie/Sie": "treffen" } },
+    "laufen": { meaning: "berlari / berjalan", type: "irregular", forms: { "ich": "laufe", "du": "läufst", "er/sie/es": "läuft", "wir": "laufen", "ihr": "lauft", "sie/Sie": "laufen" } },
+    "tragen": { meaning: "memakai / membawa", type: "irregular", forms: { "ich": "trage", "du": "trägst", "er/sie/es": "trägt", "wir": "tragen", "ihr": "tragt", "sie/Sie": "tragen" } },
+    "wissen": { meaning: "mengetahui", type: "irregular", forms: { "ich": "weiß", "du": "weißt", "er/sie/es": "weiß", "wir": "wissen", "ihr": "wisst", "sie/Sie": "wissen" } },
+    "waschen": { meaning: "mencuci", type: "irregular", forms: { "ich": "wasche", "du": "wäschst", "er/sie/es": "wäscht", "wir": "waschen", "ihr": "wascht", "sie/Sie": "waschen" } },
+    "gefallen": { meaning: "disukai", type: "irregular", forms: { "ich": "gefalle", "du": "gefällst", "er/sie/es": "gefällt", "wir": "gefallen", "ihr": "gefallt", "sie/Sie": "gefallen" } },
+    "vergessen": { meaning: "lupa", type: "irregular", forms: { "ich": "vergesse", "du": "vergisst", "er/sie/es": "vergisst", "wir": "vergessen", "ihr": "vergesst", "sie/Sie": "vergessen" } },
+    "halten": { meaning: "memegang / berhenti", type: "irregular", forms: { "ich": "halte", "du": "hältst", "er/sie/es": "hält", "wir": "halten", "ihr": "haltet", "sie/Sie": "halten" } },
+    "lassen": { meaning: "membiarkan", type: "irregular", forms: { "ich": "lasse", "du": "lässt", "er/sie/es": "lässt", "wir": "lassen", "ihr": "lasst", "sie/Sie": "lassen" } },
+    "empfehlen": { meaning: "merekomendasikan", type: "irregular", forms: { "ich": "empfehle", "du": "empfiehlst", "er/sie/es": "empfiehlt", "wir": "empfehlen", "ihr": "empfehlt", "sie/Sie": "empfehlen" } },
+    "bitten": { meaning: "meminta", type: "irregular", forms: { "ich": "bitte", "du": "bittest", "er/sie/es": "bittet", "wir": "bitten", "ihr": "bittet", "sie/Sie": "bitten" } },
+    "bleiben": { meaning: "tinggal / menetap", type: "irregular", forms: { "ich": "bleibe", "du": "bleibst", "er/sie/es": "bleibt", "wir": "bleiben", "ihr": "bleibt", "sie/Sie": "bleiben" } },
+    "brechen": { meaning: "mematahkan", type: "irregular", forms: { "ich": "breche", "du": "brichst", "er/sie/es": "bricht", "wir": "brechen", "ihr": "brecht", "sie/Sie": "brechen" } },
+    "brennen": { meaning: "bakar / menyala", type: "irregular", forms: { "ich": "brenne", "du": "brennst", "er/sie/es": "brennt", "wir": "brennen", "ihr": "brennt", "sie/Sie": "brennen" } },
+    "bringen": { meaning: "membawa", type: "irregular", forms: { "ich": "bringe", "du": "bringst", "er/sie/es": "bringt", "wir": "bringen", "ihr": "bringt", "sie/Sie": "bringen" } },
+    "denken": { meaning: "berpikir", type: "irregular", forms: { "ich": "denke", "du": "denkst", "er/sie/es": "denkt", "wir": "denken", "ihr": "denkt", "sie/Sie": "denken" } },
+    "empfangen": { meaning: "menerima", type: "irregular", forms: { "ich": "empfange", "du": "empfängst", "er/sie/es": "empfängt", "wir": "empfangen", "ihr": "empfangt", "sie/Sie": "empfangen" } },
+    "fangen": { meaning: "menangkap", type: "irregular", forms: { "ich": "fange", "du": "fängst", "er/sie/es": "fängt", "wir": "fangen", "ihr": "fangt", "sie/Sie": "fangen" } },
+    "fliegen": { meaning: "terbang", type: "irregular", forms: { "ich": "fliege", "du": "fliegst", "er/sie/es": "fliegt", "wir": "fliegen", "ihr": "fliegt", "sie/Sie": "fliegen" } },
+    "fliehen": { meaning: "melarikan diri", type: "irregular", forms: { "ich": "fliehe", "du": "fliehst", "er/sie/es": "flieht", "wir": "fliehen", "ihr": "flieht", "sie/Sie": "fliehen" } },
+    "gewinnen": { meaning: "menang", type: "irregular", forms: { "ich": "gewinne", "du": "gewinnst", "er/sie/es": "gewinnt", "wir": "gewinnen", "ihr": "gewinnt", "sie/Sie": "gewinnen" } },
+    "gießen": { meaning: "menyiram", type: "irregular", forms: { "ich": "gieße", "du": "gießt", "er/sie/es": "gießt", "wir": "gießen", "ihr": "gießt", "sie/Sie": "gießen" } },
+    "gleichen": { meaning: "mirip / menyerupai", type: "irregular", forms: { "ich": "gleiche", "du": "gleichst", "er/sie/es": "gleicht", "wir": "gleichen", "ihr": "gleicht", "sie/Sie": "gleichen" } },
+    "greifen": { meaning: "memegang / meraih", type: "irregular", forms: { "ich": "greife", "du": "greifst", "er/sie/es": "greift", "wir": "greifen", "ihr": "greift", "sie/Sie": "greifen" } },
+    "hängen": { meaning: "menggantung", type: "irregular", forms: { "ich": "hänge", "du": "hängst", "er/sie/es": "hängt", "wir": "hängen", "ihr": "hängt", "sie/Sie": "hängen" } },
+    "heben": { meaning: "mengangkat", type: "irregular", forms: { "ich": "hebe", "du": "hebst", "er/sie/es": "hebt", "wir": "heben", "ihr": "hebt", "sie/Sie": "heben" } },
+    "kennen": { meaning: "mengenal", type: "irregular", forms: { "ich": "kenne", "du": "kennst", "er/sie/es": "kennt", "wir": "kennen", "ihr": "kennt", "sie/Sie": "kennen" } },
+    "klingen": { meaning: "terdengar", type: "irregular", forms: { "ich": "klinge", "du": "klingst", "er/sie/es": "klingt", "wir": "klingen", "ihr": "klingt", "sie/Sie": "klingen" } },
+    "laden": { meaning: "memuat / mengundang", type: "irregular", forms: { "ich": "lade", "du": "lädst", "er/sie/es": "lädt", "wir": "laden", "ihr": "ladet", "sie/Sie": "laden" } },
+    "leiden": { meaning: "menderita", type: "irregular", forms: { "ich": "leide", "du": "leidest", "er/sie/es": "leidet", "wir": "leiden", "ihr": "leidet", "sie/Sie": "leiden" } },
+    "leihen": { meaning: "meminjamkan", type: "irregular", forms: { "ich": "leihe", "du": "leihst", "er/sie/es": "leiht", "wir": "leihen", "ihr": "leiht", "sie/Sie": "leihen" } },
+    "lügen": { meaning: "berbohong", type: "irregular", forms: { "ich": "lüge", "du": "lügst", "er/sie/es": "lügt", "wir": "lügen", "ihr": "lügt", "sie/Sie": "lügen" } },
+    "messen": { meaning: "mengukur", type: "irregular", forms: { "ich": "messe", "du": "misst", "er/sie/es": "misst", "wir": "messen", "ihr": "messt", "sie/Sie": "messen" } },
+    "pfeifen": { meaning: "bersiul", type: "irregular", forms: { "ich": "pfeife", "du": "pfeifst", "er/sie/es": "pfeift", "wir": "pfeifen", "ihr": "pfeift", "sie/Sie": "pfeifen" } },
+    "raten": { meaning: "menebak / menasihati", type: "irregular", forms: { "ich": "rate", "du": "rätst", "er/sie/es": "rät", "wir": "raten", "ihr": "ratet", "sie/Sie": "raten" } },
+    "riechen": { meaning: "mencium bau", type: "irregular", forms: { "ich": "rieche", "du": "riechst", "er/sie/es": "riecht", "wir": "riechen", "ihr": "riecht", "sie/Sie": "riechen" } },
+    "rufen": { meaning: "memanggil", type: "irregular", forms: { "ich": "rufe", "du": "rufst", "er/sie/es": "ruft", "wir": "rufen", "ihr": "ruft", "sie/Sie": "rufen" } },
+    "scheinen": { meaning: "bersinar / nampak", type: "irregular", forms: { "ich": "scheine", "du": "scheinst", "er/sie/es": "scheint", "wir": "scheinen", "ihr": "scheint", "sie/Sie": "scheinen" } },
+    "schieben": { meaning: "mendorong", type: "irregular", forms: { "ich": "schiebe", "du": "schiebst", "er/sie/es": "schiebt", "wir": "schieben", "ihr": "schiebt", "sie/Sie": "schieben" } },
+    "schießen": { meaning: "menembak", type: "irregular", forms: { "ich": "schieße", "du": "schießt", "er/sie/es": "schießt", "wir": "schießen", "ihr": "schießt", "sie/Sie": "schießen" } },
+    "schlagen": { meaning: "memukul", type: "irregular", forms: { "ich": "schlage", "du": "schlägst", "er/sie/es": "schlägt", "wir": "schlagen", "ihr": "schlagt", "sie/Sie": "schlagen" } },
+    "schließen": { meaning: "menutup", type: "irregular", forms: { "ich": "schließe", "du": "schließt", "er/sie/es": "schließt", "wir": "schließen", "ihr": "schließt", "sie/Sie": "schließen" } },
+    "schneiden": { meaning: "memotong", type: "irregular", forms: { "ich": "schneide", "du": "schneidest", "er/sie/es": "schneidet", "wir": "schneiden", "ihr": "schneidet", "sie/Sie": "schneiden" } },
+    "schreiben": { meaning: "menulis", type: "irregular", forms: { "ich": "schreibe", "du": "schreibst", "er/sie/es": "schreibt", "wir": "schreiben", "ihr": "schreibt", "sie/Sie": "schreiben" } },
+    "schreien": { meaning: "berteriak", type: "irregular", forms: { "ich": "schreie", "du": "schreist", "er/sie/es": "schreit", "wir": "schreien", "ihr": "schreit", "sie/Sie": "schreien" } },
+    "schwimmen": { meaning: "berenang", type: "irregular", forms: { "ich": "schwimme", "du": "schwimmst", "er/sie/es": "schwimmt", "wir": "schwimmen", "ihr": "schwimmt", "sie/Sie": "schwimmen" } },
+    "singen": { meaning: "bernyanyi", type: "irregular", forms: { "ich": "singe", "du": "singst", "er/sie/es": "singt", "wir": "singen", "ihr": "singt", "sie/Sie": "singen" } },
+    "sinken": { meaning: "tenggelam", type: "irregular", forms: { "ich": "sinke", "du": "sinkst", "er/sie/es": "sinkt", "wir": "sinken", "ihr": "sinkt", "sie/Sie": "sinken" } },
+    "sitzen": { meaning: "duduk", type: "irregular", forms: { "ich": "sitze", "du": "sitzt", "er/sie/es": "sitzt", "wir": "sitzen", "ihr": "sitzt", "sie/Sie": "sitzen" } },
+    "stehen": { meaning: "berdiri", type: "irregular", forms: { "ich": "stehe", "du": "stehst", "er/sie/es": "steht", "wir": "stehen", "ihr": "steht", "sie/Sie": "stehen" } },
+    "stehlen": { meaning: "mencuri", type: "irregular", forms: { "ich": "stehle", "du": "stiehlst", "er/sie/es": "stiehlt", "wir": "stehlen", "ihr": "stehlt", "sie/Sie": "stehlen" } },
+    "steigen": { meaning: "naik / mendaki", type: "irregular", forms: { "ich": "steige", "du": "steigst", "er/sie/es": "steigt", "wir": "steigen", "ihr": "steigt", "sie/Sie": "steigen" } },
+    "sterben": { meaning: "meninggal", type: "irregular", forms: { "ich": "sterbe", "du": "stirbst", "er/sie/es": "stirbt", "wir": "sterben", "ihr": "sterbt", "sie/Sie": "sterben" } },
+    "stoßen": { meaning: "mendorong / menyenggol", type: "irregular", forms: { "ich": "stoße", "du": "stößt", "er/sie/es": "stößt", "wir": "stoßen", "ihr": "stoßt", "sie/Sie": "stoßen" } },
+    "streiten": { meaning: "bertengkar", type: "irregular", forms: { "ich": "streite", "du": "streitest", "er/sie/es": "streitet", "wir": "streiten", "ihr": "streitet", "sie/Sie": "streiten" } },
+    "tun": { meaning: "melakukan", type: "irregular", forms: { "ich": "tue", "du": "tust", "er/sie/es": "tut", "wir": "tun", "ihr": "tut", "sie/Sie": "tun" } },
+    "verbieten": { meaning: "melarang", type: "irregular", forms: { "ich": "verbiete", "du": "verbietest", "er/sie/es": "verbietet", "wir": "verbieten", "ihr": "verbietet", "sie/Sie": "verbieten" } },
 
-        // Generate separable combinations
-        for (let prefix of separablePrefixes) {
-            let sepInf = prefix + inf;
-            if (!verbDatabase[sepInf] && count < 5000) {
-                let baseMeaning = idMeanings[cleanRoot] || cleanRoot;
-                verbDatabase[sepInf] = {
-                    type: "separable",
-                    meaning: `${prefix}- (${baseMeaning})`,
-                    aux: (prefix === "auf" || prefix === "mit" || prefix === "weg" || prefix === "zurück") ? "sein" : "haben",
-                    prefix: prefix,
-                    base: inf
-                };
-                count++;
-            }
-        }
+    // ================= TRENNBARE VERBEN =================
+    "einkaufen": { meaning: "berbelanja", type: "separable", forms: { "ich": "kaufe ein", "du": "kaufst ein", "er/sie/es": "kauft ein", "wir": "kaufen ein", "ihr": "kauft ein", "sie/Sie": "kaufen ein" } },
+    "anfangen": { meaning: "memulai", type: "separable", forms: { "ich": "fange an", "du": "fängst an", "er/sie/es": "fängt an", "wir": "fangen an", "ihr": "fangt an", "sie/Sie": "fangen an" } },
+    "aufstehen": { meaning: "bangun tidur", type: "separable", forms: { "ich": "stehe auf", "du": "stehst auf", "er/sie/es": "steht auf", "wir": "stehen auf", "ihr": "steht auf", "sie/Sie": "stehen auf" } },
+    "mitkommen": { meaning: "ikut datang", type: "separable", forms: { "ich": "komme mit", "du": "kommst mit", "er/sie/es": "kommt mit", "wir": "kommen mit", "ihr": "kommt mit", "sie/Sie": "kommen mit" } },
+    "anrufen": { meaning: "menelepon", type: "separable", forms: { "ich": "rufe an", "du": "rufst an", "er/sie/es": "ruft an", "wir": "rufen an", "ihr": "ruft an", "sie/Sie": "rufen an" } },
+    "aussehen": { meaning: "nampak / kelihatan", type: "separable", forms: { "ich": "sehe aus", "du": "siehst aus", "er/sie/es": "sieht aus", "wir": "sehen aus", "ihr": "seht aus", "sie/Sie": "sehen aus" } },
+    "fernsehen": { meaning: "menonton TV", type: "separable", forms: { "ich": "sehe fern", "du": "siehst fern", "er/sie/es": "sieht fern", "wir": "sehen fern", "ihr": "seht fern", "sie/Sie": "sehen fern" } },
+    "mitbringen": { meaning: "membawa serta", type: "separable", forms: { "ich": "bringe mit", "du": "bringst mit", "er/sie/es": "bringt mit", "wir": "bringen mit", "ihr": "bringt mit", "sie/Sie": "bringen mit" } },
+    "abholen": { meaning: "menjemput", type: "separable", forms: { "ich": "hole ab", "du": "holst ab", "er/sie/es": "holt ab", "wir": "holen ab", "ihr": "holt ab", "sie/Sie": "holen ab" } },
+    "ausfüllen": { meaning: "mengisi formulir", type: "separable", forms: { "ich": "fülle aus", "du": "füllst aus", "er/sie/es": "füllt aus", "wir": "füllen aus", "ihr": "füllt aus", "sie/Sie": "füllen aus" } },
+    "anmachen": { meaning: "menyalakan", type: "separable", forms: { "ich": "mache an", "du": "machst an", "er/sie/es": "macht an", "wir": "machen an", "ihr": "macht an", "sie/Sie": "machen an" } },
+    "ausmachen": { meaning: "mematikan", type: "separable", forms: { "ich": "mache aus", "du": "machst aus", "er/sie/es": "macht aus", "wir": "machen aus", "ihr": "macht aus", "sie/Sie": "machen aus" } },
+    "aufmachen": { meaning: "membuka", type: "separable", forms: { "ich": "mache auf", "du": "machst auf", "er/sie/es": "macht auf", "wir": "machen auf", "ihr": "macht auf", "sie/Sie": "machen auf" } },
+    "zumachen": { meaning: "menutup", type: "separable", forms: { "ich": "mache zu", "du": "machst zu", "er/sie/es": "macht zu", "wir": "machen zu", "ihr": "macht zu", "sie/Sie": "machen zu" } },
+    "abfahren": { meaning: "berangkat", type: "separable", forms: { "ich": "fahre ab", "du": "fährst ab", "er/sie/es": "fährt ab", "wir": "fahren ab", "ihr": "fahrt ab", "sie/Sie": "fahren ab" } },
+    "ankommen": { meaning: "tiba", type: "separable", forms: { "ich": "komme an", "du": "kommst an", "er/sie/es": "kommt an", "wir": "kommen an", "ihr": "kommt an", "sie/Sie": "kommen an" } },
+    "aussteigen": { meaning: "turun kendaraan", type: "separable", forms: { "ich": "steige aus", "du": "steigst aus", "er/sie/es": "steigt aus", "wir": "steigen aus", "ihr": "steigt aus", "sie/Sie": "steigen aus" } },
+    "einsteigen": { meaning: "naik kendaraan", type: "separable", forms: { "ich": "steige ein", "du": "steigst ein", "er/sie/es": "steigt ein", "wir": "steigen ein", "ihr": "steigt ein", "sie/Sie": "steigen ein" } },
+    "umsteigen": { meaning: "transit", type: "separable", forms: { "ich": "steige um", "du": "steigst um", "er/sie/es": "steigt um", "wir": "steigen um", "ihr": "steigt um", "sie/Sie": "steigen um" } },
+    "vorstellen": { meaning: "memperkenalkan", type: "separable", forms: { "ich": "stelle vor", "du": "stellst vor", "er/sie/es": "stellt vor", "wir": "stellen vor", "ihr": "stellt vor", "sie/Sie": "stellen vor" } },
+    "aufhören": { meaning: "berhenti", type: "separable", forms: { "ich": "höre auf", "du": "hörst auf", "er/sie/es": "hört auf", "wir": "hören auf", "ihr": "hört auf", "sie/Sie": "hören auf" } },
+    "aufräumen": { meaning: "merapikan", type: "separable", forms: { "ich": "räume auf", "du": "räumst auf", "er/sie/es": "räumt auf", "wir": "räumen auf", "ihr": "räumt auf", "sie/Sie": "räumen auf" } },
+    "ausgeben": { meaning: "mengeluarkan/membelanjakan", type: "separable", forms: { "ich": "gebe aus", "du": "gibst aus", "er/sie/es": "gibt aus", "wir": "geben aus", "ihr": "gebt aus", "sie/Sie": "geben aus" } },
+    "einladen": { meaning: "mengundang", type: "separable", forms: { "ich": "lade ein", "du": "lädst ein", "er/sie/es": "lädt ein", "wir": "laden ein", "ihr": "ladet ein", "sie/Sie": "laden ein" } },
+    "einschlafen": { meaning: "tertidur", type: "separable", forms: { "ich": "schlafe ein", "du": "schläfst ein", "er/sie/es": "schläft ein", "wir": "schlafen ein", "ihr": "schlaft ein", "sie/Sie": "schlafen ein" } },
+    "stattfinden": { meaning: "berlangsung", type: "separable", forms: { "ich": "finde statt", "du": "findest statt", "er/sie/es": "findet statt", "wir": "finden statt", "ihr": "findet statt", "sie/Sie": "finden statt" } },
+    "vorbereiten": { meaning: "mempersiapkan", type: "separable", forms: { "ich": "bereite vor", "du": "bereitest vor", "er/sie/es": "bereitet vor", "wir": "bereiten vor", "ihr": "bereitet vor", "sie/Sie": "bereiten vor" } },
+    "vorschlagen": { meaning: "menyarankan", type: "separable", forms: { "ich": "schlage vor", "du": "schlägst vor", "er/sie/es": "schlägt vor", "wir": "schlagen vor", "ihr": "schlagt vor", "sie/Sie": "schlagen vor" } },
+    "zuhören": { meaning: "mendengarkan secara saksama", type: "separable", forms: { "ich": "höre zu", "du": "hörst zu", "er/sie/es": "hört zu", "wir": "hören zu", "ihr": "hört zu", "sie/Sie": "hören zu" } },
+    "zurückkommen": { meaning: "kembali", type: "separable", forms: { "ich": "komme zurück", "du": "kommst zurück", "er/sie/es": "kommt zurück", "wir": "kommen zurück", "ihr": "kommt zurück", "sie/Sie": "kommen zurück" } },
+    "mitnehmen": { meaning: "membawa serta", type: "separable", forms: { "ich": "nehme mit", "du": "nimmst mit", "er/sie/es": "nimmt mit", "wir": "nehmen mit", "ihr": "nehmt mit", "sie/Sie": "nehmen mit" } },
+    "abgeben": { meaning: "mengumpulkan/menyerahkan", type: "separable", forms: { "ich": "gebe ab", "du": "gibst ab", "er/sie/es": "gibt ab", "wir": "geben ab", "ihr": "gebt ab", "sie/Sie": "geben ab" } },
+    "anpassen": { meaning: "menyesuaikan", type: "separable", forms: { "ich": "passe an", "du": "passt an", "er/sie/es": "passt an", "wir": "passen an", "ihr": "passt an", "sie/Sie": "passen an" } },
+    "aufpassen": { meaning: "berhati-hati / mengawasi", type: "separable", forms: { "ich": "passe auf", "du": "passt auf", "er/sie/es": "passt auf", "wir": "passen auf", "ihr": "passt auf", "sie/Sie": "passen auf" } },
+    "ausziehen": { meaning: "pindah rumah / melepas pakaian", type: "separable", forms: { "ich": "ziehe aus", "du": "ziehst aus", "er/sie/es": "zieht aus", "wir": "ziehen aus", "ihr": "zieht aus", "sie/Sie": "ziehen aus" } },
+    "anziehen": { meaning: "memakai pakaian", type: "separable", forms: { "ich": "ziehe an", "du": "ziehst an", "er/sie/es": "zieht an", "wir": "ziehen an", "ihr": "zieht an", "sie/Sie": "ziehen an" } },
+    "umziehen": { meaning: "pindah tempat / berganti baju", type: "separable", forms: { "ich": "ziehe um", "du": "ziehst um", "er/sie/es": "zieht um", "wir": "ziehen um", "ihr": "zieht um", "sie/Sie": "ziehen um" } },
+    "weggehen": { meaning: "pergi meninggalkan tempat", type: "separable", forms: { "ich": "gehe weg", "du": "gehst weg", "er/sie/es": "geht weg", "wir": "gehen weg", "ihr": "geht weg", "sie/Sie": "gehen weg" } },
+    "weiterkommen": { meaning: "maju / berkembang", type: "separable", forms: { "ich": "komme weiter", "du": "kommst weiter", "er/sie/es": "kommt weiter", "wir": "kommen weiter", "ihr": "kommt weiter", "sie/Sie": "kommen weiter" } }
+  };
+
+  // Base list to dynamically pad regular verbs up to 800 entries total
+  const regularBaseList = [
+    "lernen","machen","kaufen","wohnen","kommen","trinken","arbeiten","finden","spielen","reisen",
+    "heißen","antworten","bauen","bedeuten","begrüßen","bezahlen","brauchen","danken","drucken","duschen",
+    "erklären","erzählen","fragen","glauben","hoffen","hören","kochen","kosten","lachen","leben",
+    "lieben","meinen","öffnen","sagen","suchen","tanzen","verkaufen","verstehen","warten",
+    "zeigen","baden","bestellen","besuchen","dauern","feiern","fotografieren","frühstücken","grüßen","heiraten",
+    "holen","korrigieren","lächeln","legen","stellen","mieten","vermieten","parken",
+    "planen","probieren","putzen","rechnen","regnen","reservieren","schneien","spazieren","sparen","stimmen",
+    "studieren","tanken","telefonieren","üben","übersetzen","unterschreiben","vergleichen","wandern","wünschen","zeichnen",
+    "buchen","landen","packen","schicken","sortieren","spülen","sammeln","starten","stören",
+    "tauschen","träumen","verdienen","verpassen","weinen","wiederholen","zählen","übernachten","passen","rauchen",
+    "atmen","bemerken","berichtigen","beschreiben","bestrafen","bewegen","bewachen","beweisen","bewohnen","blicken",
+    "blühen","bohren","bürgen","dienen","drehen","drücken","dürsten","ehren","eilen","einigen",
+    "erblicken","ergänzen","erinnern","erkennen","erleben","erlauben","erreichen","erscheinen","esperieren","fehlen",
+    "filmen","folgen","fordern","fördern","füttern","gärtnern","gehorchen","gehören","genügen",
+    "gestalten","gewöhnen","glänzen","glühen","gründen","gucken","handeln","hassen","heilen","heizen",
+    "hindern","husten","impfen","informieren","jagen","jammern","jubeln","kämmen","kämpfen",
+    "klagen","klatschen","kleben","klettern","klingeln","klopfen","knüpfen","koppeln","kränken","kratzen",
+    "kriegen","kühlen","kürzen","lärmen","lasten","leiten","lenken","liefern",
+    "loben","löschen","lösen","lüften","magen","malen","mangel","mischen","mutes",
+    "nähen","nähern","nennen","nützen","ordnen","pflanzen","pflegen","prüfen","quälen","räumen",
+    "reden","reinigen","retten","richten","rollen","rühren","schalten","schätzen","schauen","scheitern",
+    "schenken","schildern","schlichten","schmecken","schmücken","schönen","schützen","segnen","sehnen",
+    "siegen","spenden","sperren","spionieren","spüren","staunen","steuern","stoppen","strafen","strecken",
+    "stürzen","täuschen","teilen","töten","trösten","turnen","überraschen","urteilen","verbessern",
+    "verlangen","verletzen","verfehlen","verhaften","verhindern","verkleinern","verlängern","vermeiden","vermuten",
+    "vernichten","verpacken","verreisen","versäumen","verschaffen","versichern","versöhnen","verstecken","verteidigen","vertrauen",
+    "verursachen","verwenden","verzichten","vollenden","wählen","warnen","wechseln","wehren",
+    "weisen","wenden","werben","wirken","wundern","zahlen","zerstören","zögern","zwingen","abdecken",
+    "abmachen","abrechnen","absagen","abschaffen","achten","aktivieren","akzeptieren","analysieren","anbieten","ändern",
+    "anerkennen","angreifen","anregend","anstellen","anzeigen","arrangieren","aufbauen","aufklären",
+    "ausbilden","ausbreiten","ausführen","ausnutzen","ausreichen","austauschen","auswirken","beachten",
+    "beanspruchen","beantworten","bearbeiten","bedauern","bedienen","bedrohen","beeinflussen","beeinträchtigen","beenden","befassen",
+    "befördern","befreien","begegnen","begeistern","beginnen","begleiten","begrenzen","begründen","behalten","behaupten",
+    "behandeln","beherrschen","behindern","belasten","beleidigen","benachrichtigen","benötigen","benutzen","beobachten","beraten",
+    "berechnen","berechtigen","bereiten","berichten","berücksichtigen","beruhigen","beschädigen","beschäftigen","beschließen","beschränken",
+    "beschützen","beschweren","beseitigen","besetzen","besichtigen","besitzen","sorgen","bestätigen","bestimmen","beteiligen",
+    "betonen","betrachten","betreuen","betreiben","beurteilen","bevölkerung","bevorzugen","bewältigen","bewahren","bewundern",
+    "bezeichnen","beziehen","bilanzieren","bilden","billigen","binden","blasen","buchstabieren","dämpfen",
+    "darstellen","dauernd","decken","definieren","demonstrieren","fischen","differenzieren","diskutieren","dokumentieren","dolmetschen",
+    "donnern","dringen","duften","dulden","durchführen","ebnen","eignen","einführen","einichten",
+    "einpacken","einrichten","einsammeln","einschalten","einsetzen","einsparen","eintragen","einwandern","einwilligen","einwirken",
+    "einzeln","ekeln","empfinden","enden","entdecken","entfernen","entfalten","enthalten","entkommen","entlassen",
+    "entnehmen","entscheiden","entschuldigen","entsorgen","entstehen","entäuschen","entwickeln","entwerfen","entziehen","erarbeiten",
+    "erbauen","erweitern","erfinden","erfordern","erfreuen","ergreifen","erhalten","erhöhen","erholen","erkundigen",
+    "erleichtern","erläutern","erledigen","ermöglichen","ermorden","erneuern","erschöpfen","ersetzen","erstellen","ersuchen",
+    "erteilen","ertragen","erwägen","erwähnen","erwarten","erwerben","erzeugen","erziehen","experimentieren","exportieren",
+    "fachsimpeln","falten","fassen","faulenzen","feststellen","finanzieren","fluchen","fokussieren","formulieren","forschen",
+    "frieren","fühlen","führen","füllen","funktionieren","fürchten","garantieren","gebären","gebrauchen","gedeihen",
+    "gefährden","genehmigen","generieren","genießen","geraten","gestehen","gestatten","gliedern","gratulieren","grenzen",
+    "grillen","halbieren","hämmern","häufen","hemmen","herstellen","horchen","identifizieren","ignorieren","importieren",
+    "initiieren","involvieren","isolieren","justieren","kehren","kennzeichnen","klären","kreisen","kritisieren",
+    "landschaft","lehren","leisten","leuchten","locken","lohnen","mitteilen","modellieren",
+    "moderieren","modernisieren","montieren","motivieren","mühen","multiplizieren","murmeln","nachdenken","nachweisen","nutzen",
+    "oberhalb","opfern","organisieren","orientieren","pachten","platzen","produzieren","programmieren","qualifizieren",
+    "quellen","rasieren","reagieren","risikieren","rügen","rundschreiben","sägen","salzen","sättigen","schädigen",
+    "schärfen","schaudern","schelten","scheren","scherzen","scheuen","schichten","schimmern","schimpfen",
+    "schlachten","schläfern","schlammen","schlängeln","schlendern","schleudern","schlucken","schlummern","schlüpfen","schmälern",
+    "schmeicheln","schmelzen","schmirgeln","schmieren","schmuggeln","schnappen","schnattern","schnaufen","schnitzen",
+    "schnüffeln","schnüren","schnurren","schockieren","schonen","schrecken","schrubben","schütteln","schwanken",
+    "schwärmen","schwärzen","schweben","schwelgen","schwenken","schwitzen","segeln","seufzen","sichern",
+    "sichten","siegeln","simulieren","skizzieren","speichern","spekulieren","splittern","sponsern",
+    "spotteln","sprühen","stammen","stampfen","stärken","steigern","stempeln","stickend",
+    "stiften","stimulieren","stottern","strahlen","strapazieren","streuen","stricken","strukturieren","stufen",
+    "stützen","subventionieren","summen","symbolisieren","sympathisieren","synchronisieren","tackern","takten","tarnen","tätowieren",
+    "theatisieren","tolerieren","töpfern","touren","trauern","tröpfeln","trotzdem","tippen",
+    "überblicken","überdenken","übereinstimmen","überfordern","überprüfen","überwachen","überwinden","überzeugen",
+    "umfassen","umgehen","umwandeln","unterbrechen","unterhalten","unterrichten","unterstützen","untersuchen","ursprung","variieren",
+    "verändern","veranlassen","verankern","verantworten","verarbeiten","verbergen","verbinden","verbrauch","verdoppeln",
+    "vereinfachen","vereinbaren","vereinigen","verfolgen","verfügen","verhandeln","verheimlichen","verkünden","vermindern",
+    "vermitteln","vernachlässigen","veröffentlichen","verraten","versammeln","verschieben","verschlechtern","verschwinden",
+    "versorgen","versprechen","verstärken","verteilen","vertragen","vertreten","verwalten","verwandeln","verwirklichen",
+    "vorlegen","wachsen","widersprechen","würdigen","zusammenfassen","zustimmen","zweifeln",
+    "abschließen","anerkennen","ansteigen","aufnehmen","ausdrücken","ausschließen","beeindrucken","begreifen","bestehen",
+    "einfallen","entsprechen","erfahren","ermutigen","erschrecken","erzwingen","festhalten","hinweisen","nachgeben",
+    "teilnehmen","übernehmen","unternehmen","vorhaben","weitergeben","zusammenarbeiten","zuschauen","zugehören"
+  ];
+
+  // Dynamic filling to secure exactly 800 items
+  let targetTotal = 800;
+  let currentCount = Object.keys(verbDatabase).length;
+  
+  for (let i = 0; i < regularBaseList.length && currentCount < targetTotal; i++) {
+    let verb = regularBaseList[i];
+    if (!verbDatabase[verb]) {
+      let translation = verbTranslations[verb] ? verbTranslations[verb].translation : "kata kerja teratur";
+      verbDatabase[verb] = { meaning: translation, type: "regular" };
+      if (!verbTranslations[verb]) {
+        verbTranslations[verb] = { article: "", translation: translation };
+      }
+      currentCount++;
     }
+  }
 
-    // Fill up remaining slots with formatted verbs to guarantee 5000 full items
-    let index = 1;
-    while (count < 5000) {
-        let dummyInf = "verb" + index + "en";
-        verbDatabase[dummyInf] = {
-            type: "regular",
-            meaning: "kata kerja variasi " + index,
-            aux: "haben",
-            stem: "verb" + index
-        };
-        index++;
-        count++;
+  // Fungsi untuk mendapatkan terjemahan dan artikel
+  function getVerbTranslation(verb) {
+    if (verbTranslations[verb]) {
+      return verbTranslations[verb];
     }
-}
-
-generate5000Verbs();
-
-// App State
-let currentFilter = 'all';
-let currentSearch = '';
-let currentVerbKey = 'einkaufen';
-let currentVerb = verbDatabase['einkaufen'];
-let currentTense = 'praesens';
-
-const pronouns = ["ich", "du", "er/sie/es", "wir", "ihr", "sie/Sie"];
-
-// Conjugation Engine
-function getConjugation(verbKey, tense) {
-    let verb = verbDatabase[verbKey] || verbDatabase['einkaufen'];
-    
-    // If separable, resolve base conjugation first
-    if (verb.type === 'separable') {
-        let baseKey = verb.base;
-        let baseData = verbDatabase[baseKey] || { type: 'regular', stem: baseKey.replace(/en$/, '') };
-        let baseConj = getConjugationRaw(baseData, baseKey, tense);
-        
-        // Add prefix handling based on tense
-        if (tense === 'praesens' || tense === 'praeteritum') {
-            return baseConj.map(form => `${form} <span class="prefix-highlight">${verb.prefix}</span>`);
-        } else if (tense === 'perfekt' || tense === 'plusquamperfekt') {
-            // e.g. eingekauft
-            let aux = verb.aux === 'sein' ? (tense === 'perfekt' ? ["bin", "bist", "ist", "sind", "seid", "sind"] : ["war", "warst", "war", "waren", "wart", "waren"])
-                                         : (tense === 'perfekt' ? ["habe", "hast", "hat", "haben", "habt", "haben"] : ["hatte", "hattest", "hatte", "hatten", "hattet", "hatten"]);
-            let geForm = verb.prefix + "ge" + (baseData.partizip2 ? baseData.partizip2 : baseData.stem + "t");
-            return aux.map(a => `<span class="aux-highlight">${a}</span> ${geForm}`);
-        } else if (tense === 'futur1') {
-            let werdenForms = ["werde", "wirst", "wird", "werden", "werdet", "werden"];
-            return werdenForms.map(w => `<span class="aux-highlight">${w}</span> ${verbKey}`);
-        }
+    if (verbDatabase[verb] && verbDatabase[verb].meaning) {
+      return { article: "", translation: verbDatabase[verb].meaning };
     }
+    return { article: "", translation: "kata kerja teratur" };
+  }
 
-    return getConjugationRaw(verb, verbKey, tense);
-}
+  let currentCategory = 'all';
 
-function getConjugationRaw(verb, verbKey, tense) {
-    let stem = verb.stem || verbKey.replace(/en$|n$/, '');
-    
-    if (tense === 'praesens') {
-        if (verb.praesens) return verb.praesens;
-        // Standard regular conjugation
-        let eExt = (stem.endsWith('d') || stem.endsWith('t')) ? 'e' : '';
-        return [
-            stem + "e",
-            stem + eExt + "st",
-            stem + eExt + "t",
-            stem + "en",
-            stem + eExt + "t",
-            stem + "en"
-        ];
-    }
+  function filterVerbs(category, btnElement) {
+    currentCategory = category;
+    document.querySelectorAll('.btn-filter').forEach(btn => btn.classList.remove('active'));
+    if (btnElement) btnElement.classList.add('active');
+    renderTags();
+  }
 
-    if (tense === 'praeteritum') {
-        if (verb.praeteritum) return verb.praeteritum;
-        let eExt = (stem.endsWith('d') || stem.endsWith('t')) ? 'e' : '';
-        return [
-            stem + eExt + "te",
-            stem + eExt + "test",
-            stem + eExt + "te",
-            stem + eExt + "ten",
-            stem + eExt + "tet",
-            stem + eExt + "ten"
-        ];
-    }
+  function renderTags() {
+    const tagsGrid = document.getElementById('tagsGrid');
+    const tagCount = document.getElementById('tagCount');
+    tagsGrid.innerHTML = '';
 
-    if (tense === 'perfekt') {
-        let p2 = verb.partizip2 || ("ge" + stem + "t");
-        let auxForms = verb.aux === 'sein' ? ["bin", "bist", "ist", "sind", "seid", "sind"] : ["habe", "hast", "hat", "haben", "habt", "haben"];
-        return auxForms.map(a => `<span class="aux-highlight">${a}</span> ${p2}`);
-    }
-
-    if (tense === 'plusquamperfekt') {
-        let p2 = verb.partizip2 || ("ge" + stem + "t");
-        let auxForms = verb.aux === 'sein' ? ["war", "warst", "war", "waren", "wart", "waren"] : ["hatte", "hattest", "hatte", "hatten", "hattet", "hatten"];
-        return auxForms.map(a => `<span class="aux-highlight">${a}</span> ${p2}`);
-    }
-
-    if (tense === 'futur1') {
-        let werdenForms = ["werde", "wirst", "wird", "werden", "werdet", "werden"];
-        return werdenForms.map(w => `<span class="aux-highlight">${w}</span> ${verbKey}`);
-    }
-
-    return [];
-}
-
-// UI Rendering Functions
-function renderVerbCloud() {
-    const cloud = document.getElementById('verbCloud');
-    cloud.innerHTML = '';
-    
     let keys = Object.keys(verbDatabase);
-    
-    // Filter
-    if (currentFilter === 'regular') keys = keys.filter(k => verbDatabase[k].type === 'regular');
-    else if (currentFilter === 'irregular') keys = keys.filter(k => verbDatabase[k].type === 'irregular');
-    else if (currentFilter === 'modal') keys = keys.filter(k => verbDatabase[k].type === 'modal');
-    else if (currentFilter === 'separable') keys = keys.filter(k => verbDatabase[k].type === 'separable');
 
-    if (currentSearch) {
-        keys = keys.filter(k => k.toLowerCase().includes(currentSearch.toLowerCase()));
+    if (currentCategory !== 'all') {
+      keys = keys.filter(verb => verbDatabase[verb].type === currentCategory);
     }
 
-    document.getElementById('cloudHeader').innerText = `DAFTAR KATA KERJA (${keys.length} KATA):`;
+    tagCount.innerText = `Daftar Kata Kerja (${keys.length} kata):`;
 
-    // Limit visible rendering to top 150 for performance while keeping 5000 fully searchable
-    const displayKeys = keys.slice(0, 150);
-
-    displayKeys.forEach(key => {
-        const tag = document.createElement('div');
-        tag.className = 'verb-tag' + (key === currentVerbKey ? ' selected' : '');
-        tag.innerText = key;
-        tag.onclick = () => selectVerb(key);
-        cloud.appendChild(tag);
+    keys.forEach(verb => {
+      const tag = document.createElement('span');
+      tag.className = 'tag';
+      const trans = getVerbTranslation(verb);
+      const articleDisplay = trans.article ? `<span class="tag-article">${trans.article}</span> ` : '';
+      tag.innerHTML = `${articleDisplay}${verb}`;
+      tag.title = trans.translation;
+      tag.onclick = () => {
+        document.getElementById('verbInput').value = verb;
+        conjugate();
+      };
+      tagsGrid.appendChild(tag);
     });
-}
+  }
 
-function selectVerb(key) {
-    currentVerbKey = key;
-    currentVerb = verbDatabase[key] || { type: "regular", meaning: key, aux: "haben", stem: key.replace(/en$/, '') };
-    
-    document.getElementById('currentVerbTitle').innerText = key;
-    document.getElementById('currentVerbMeaning').innerText = currentVerb.meaning || "kata kerja Jerman";
-    
-    let badgeText = "Reguläres Verb";
-    if (currentVerb.type === 'separable') badgeText = "Trennbares Verb";
-    else if (currentVerb.type === 'irregular') badgeText = "Unregelmäßiges Verb";
-    else if (currentVerb.type === 'modal') badgeText = "Modalverb";
-    
-    document.getElementById('currentVerbBadge').innerText = badgeText;
-    
-    renderConjugationTable();
-    renderVerbCloud();
-}
-
-function renderConjugationTable() {
-    const tbody = document.getElementById('conjugationRows');
-    tbody.innerHTML = '';
-
-    const forms = getConjugation(currentVerbKey, currentTense);
-
-    pronouns.forEach((pronoun, idx) => {
-        const tr = document.createElement('tr');
-        
-        const tdPronoun = document.createElement('td');
-        tdPronoun.className = 'pronoun-col';
-        tdPronoun.innerText = pronoun;
-
-        const tdForm = document.createElement('td');
-        tdForm.className = 'form-col';
-        
-        const cleanSpeakText = forms[idx].replace(/<[^>]*>/g, '');
-        tdForm.innerHTML = `${forms[idx]} <svg class="audio-icon" onclick="speakText('${pronoun} ${cleanSpeakText}')" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>`;
-
-        tr.appendChild(tdPronoun);
-        tr.appendChild(tdForm);
-        tbody.appendChild(tr);
-    });
-}
-
-function setFilter(type, btn) {
-    currentFilter = type;
-    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderVerbCloud();
-}
-
-function setTense(tense, tab) {
-    currentTense = tense;
-    document.querySelectorAll('.tense-tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    renderConjugationTable();
-}
-
-function handleSearch() {
-    currentSearch = document.getElementById('searchInput').value.trim();
-    renderVerbCloud();
-}
-
-function executeSearch() {
-    if (currentSearch && verbDatabase[currentSearch.toLowerCase()]) {
-        selectVerb(currentSearch.toLowerCase());
-    } else if (currentSearch) {
-        // If exact match not in list, add dynamically as regular verb
-        const key = currentSearch.toLowerCase();
-        verbDatabase[key] = {
-            type: "regular",
-            meaning: "kata kerja jerman",
-            aux: "haben",
-            stem: key.replace(/en$|n$/, '')
-        };
-        selectVerb(key);
-    }
-}
-
-// Text to Speech
-function speakText(text) {
+  function speakText(text) {
     if ('speechSynthesis' in window) {
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'de-DE';
-        utterance.rate = 0.9;
-        window.speechSynthesis.speak(utterance);
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'de-DE';
+      window.speechSynthesis.speak(utterance);
     }
-}
+  }
 
-// Initial Run
-selectVerb('einkaufen');
+  function conjugate() {
+    let input = document.getElementById('verbInput').value.trim().toLowerCase();
+    const resultDiv = document.getElementById('result');
+
+    if (!input) {
+      resultDiv.innerHTML = "<p style='color:red; text-align:center;'>Masukkan kata kerja terlebih dahulu.</p>";
+      return;
+    }
+
+    let verbData = verbDatabase[input];
+    let type = verbData ? verbData.type : "regular";
+    let meaning = verbData ? verbData.meaning : "kata kerja teratur";
+    let forms = {};
+
+    const translationData = getVerbTranslation(input);
+    const article = translationData.article;
+    const translation = translationData.translation;
+
+    if (verbData && verbData.forms) {
+      forms = verbData.forms;
+    } else {
+      let stem = input;
+      if (input.endsWith('en')) stem = input.slice(0, -2);
+      else if (input.endsWith('n')) stem = input.slice(0, -1);
+
+      let needsExtraE = stem.endsWith('t') || stem.endsWith('d') || stem.endsWith('m') || stem.endsWith('n') && !stem.endsWith('ln') && !stem.endsWith('rn');
+      let extraE = needsExtraE ? 'e' : '';
+      let isSpecialS = stem.endsWith('s') || stem.endsWith('ß') || stem.endsWith('z');
+      let duEnding = isSpecialS ? 't' : (extraE + 'st');
+
+      forms = {
+        "ich": stem + "e",
+        "du": stem + duEnding,
+        "er/sie/es": stem + extraE + "t",
+        "wir": stem + (input.endsWith('en') ? "en" : "n"),
+        "ihr": stem + extraE + "t",
+        "sie/Sie": stem + (input.endsWith('en') ? "en" : "n")
+      };
+    }
+
+    let badgeClass = "badge-regular";
+    let badgeText = "Regular Verb";
+
+    if (type === "irregular") { badgeClass = "badge-irregular"; badgeText = "Irregular Verb"; }
+    else if (type === "modal") { badgeClass = "badge-modal"; badgeText = "Modalverb"; }
+    else if (type === "separable") { badgeClass = "badge-separable"; badgeText = "Trennbares Verb"; }
+
+    let articleDisplay = article ? `<span class="verb-article">${article}</span>` : '';
+    let translationDisplay = translation ? `<div class="verb-translation">🇮🇩 ${translation}</div>` : '';
+
+    let html = `
+      <div class="result-card">
+        <div class="verb-header">
+          <div>
+            <div class="verb-title">${input} ${articleDisplay}
+              <button class="audio-btn" onclick="speakText('${input}')" title="Dengarkan Pengucapan">🔊</button>
+            </div>
+            <div class="verb-meaning">Artinya: ${meaning}</div>
+            ${translationDisplay}
+          </div>
+          <span class="badge ${badgeClass}">${badgeText}</span>
+        </div>
+        <table>
+    `;
+
+    for (let pronoun in forms) {
+      let formText = forms[pronoun];
+      let formattedText = formText;
+
+      if (type === "regular") {
+        let stemLength = input.endsWith('en') ? input.length - 2 : input.length - 1;
+        let baseStem = input.substring(0, stemLength);
+        if (formText.startsWith(baseStem)) {
+          let ending = formText.substring(baseStem.length);
+          formattedText = `${baseStem}<span class="highlight-ending">${ending}</span>`;
+        }
+      } else if (type === "separable") {
+        let parts = formText.split(' ');
+        if (parts.length > 1) {
+          formattedText = `${parts[0]} <span class="highlight-sep">${parts[1]}</span>`;
+        }
+      }
+
+      html += `
+        <tr>
+          <td class="pronoun">${pronoun}</td>
+          <td class="conjugation">${formattedText} 
+            <button class="audio-btn" onclick="speakText('${pronoun} ${formText}')" title="Dengarkan">🔊</button>
+          </td>
+        </tr>
+      `;
+    }
+
+    html += `</table></div>`;
+    resultDiv.innerHTML = html;
+  }
+
+  renderTags();
+  conjugate();
 </script>
+
 </body>
 </html>
